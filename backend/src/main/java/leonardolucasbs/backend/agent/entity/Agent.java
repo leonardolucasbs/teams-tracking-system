@@ -2,6 +2,7 @@ package leonardolucasbs.backend.agent.entity;
 
 import jakarta.persistence.*;
 import leonardolucasbs.backend.agent.enums.AgentRole;
+import leonardolucasbs.backend.agent.enums.AgentSource;
 import leonardolucasbs.backend.agent.enums.AgentStatus;
 import lombok.*;
 
@@ -46,6 +47,10 @@ public class Agent {
     @Column(nullable = false, length = 30)
     private AgentStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private AgentSource source;
+
     @Column(nullable = false)
     private Integer battery;
 
@@ -83,6 +88,10 @@ public class Agent {
 
         if (battery == null) {
             battery = 0;
+        }
+
+        if (source == null) {
+            source = AgentSource.LOCAL;
         }
     }
 

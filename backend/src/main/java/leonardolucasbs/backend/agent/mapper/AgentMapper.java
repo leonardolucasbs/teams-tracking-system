@@ -1,17 +1,16 @@
-package leonardolucasbs.backend.agent;
+package leonardolucasbs.backend.agent.mapper;
 
 import leonardolucasbs.backend.agent.dto.AgentCreateRequestDTO;
 import leonardolucasbs.backend.agent.dto.AgentResponseDTO;
 import leonardolucasbs.backend.agent.dto.AgentUpdateRequestDTO;
-import leonardolucasbs.backend.agent.dto.ExternalAgentResponseDTO;
+import leonardolucasbs.backend.agent.enums.AgentSource;
+import leonardolucasbs.backend.external.dto.ExternalAgentResponseDTO;
 import leonardolucasbs.backend.agent.entity.Agent;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
+@Component
 public final class AgentMapper {
-
-    private AgentMapper() {
-    }
 
     public static Agent fromExternalResponse(ExternalAgentResponseDTO dto) {
         return Agent.builder()
@@ -24,6 +23,7 @@ public final class AgentMapper {
                 .email(dto.email())
                 .active(dto.active())
                 .status(dto.status())
+                .source(AgentSource.EXTERNAL_API)
                 .battery(dto.battery())
                 .lastSeen(dto.lastSeen())
                 .externalCreatedAt(dto.createdAt())
@@ -44,6 +44,7 @@ public final class AgentMapper {
                 .email(dto.email())
                 .active(dto.active() != null ? dto.active() : true)
                 .status(dto.status())
+                .source(AgentSource.LOCAL)
                 .battery(dto.battery())
                 .lastSeen(null)
                 .externalCreatedAt(null)
@@ -51,7 +52,7 @@ public final class AgentMapper {
                 .build();
     }
 
-    public static AgentResponseDTO toResponse(Agent agent) {
+    public AgentResponseDTO toResponse(Agent agent) {
         return new AgentResponseDTO(
                 agent.getId(),
                 agent.getExternalId(),
@@ -89,6 +90,7 @@ public final class AgentMapper {
         agent.setEmail(dto.email());
         agent.setActive(dto.active());
         agent.setStatus(dto.status());
+        agent.setSource(AgentSource.EXTERNAL_API);
         agent.setBattery(dto.battery());
         agent.setLastSeen(dto.lastSeen());
         agent.setExternalCreatedAt(dto.createdAt());

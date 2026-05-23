@@ -1,4 +1,4 @@
-package leonardolucasbs.backend.agent.dto;
+package leonardolucasbs.backend.external.dto;
 
 import leonardolucasbs.backend.agent.enums.AgentRole;
 import leonardolucasbs.backend.agent.enums.AgentStatus;

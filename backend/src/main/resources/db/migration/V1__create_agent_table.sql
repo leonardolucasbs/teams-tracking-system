@@ -17,9 +17,15 @@ CREATE TABLE agents (
 
                         status VARCHAR(7) NOT NULL,
 
+                        source VARCHAR(30) NOT NULL,
+
                         battery INT NOT NULL,
 
                         last_seen DATETIME(3),
+
+                        external_created_at DATETIME(3),
+
+                        external_updated_at DATETIME(3),
 
                         created_at DATETIME(3) NOT NULL,
 
@@ -30,6 +36,9 @@ CREATE TABLE agents (
 
                         CONSTRAINT chk_agents_status
                             CHECK (status IN ('ONLINE', 'OFFLINE', 'PAUSED')),
+
+                        CONSTRAINT chk_agents_source
+                            CHECK (source IN ('EXTERNAL_API', 'LOCAL')),
 
                         CONSTRAINT chk_agents_battery
                             CHECK (battery BETWEEN 0 AND 100)

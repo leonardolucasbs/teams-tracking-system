@@ -31,7 +31,7 @@ public record AgentCreateRequestDTO(
         @Max(value = 100, message = "The battery capacity cannot exceed 100")
         Integer battery,
 
-        @NotBlank(message = "The active is required")
+        @NotNull(message = "The active is required")
         Boolean active
 ) {
 }
