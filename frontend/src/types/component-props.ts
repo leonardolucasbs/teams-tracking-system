@@ -23,8 +23,3 @@ export type StateMessageProps = {
 export type LoadingStateProps = {
   message?: string;
 };
-
-export type DashboardSection = {
-  title: string;
-  description: string;
-};

@@ -1,28 +1,49 @@
+"use client";
+
+import { EmptyState } from "@/components/shared/empty-state";
+import { ErrorState } from "@/components/shared/error-state";
+import { LoadingState } from "@/components/shared/loading-state";
 import { PageHeader } from "@/components/shared/page-header";
-import { dashboardSections } from "@/features/dashboard/constants/dashboard-sections";
+import { LatestSyncStatus } from "@/features/dashboard/components/latest-sync-status";
+import { OverviewCards } from "@/features/dashboard/components/overview-cards";
+import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
+import { isDashboardEmpty } from "@/features/dashboard/utils/dashboard.utils";
 
 export function DashboardPage() {
+  const { data, isLoading, isError } = useDashboard();
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
-        description="Base do frontend para o desafio de rastreamento de equipes."
+        description="Visão operacional dos dados sincronizados pelo backend."
       />
-      <div className="grid gap-4 md:grid-cols-3">
-        {dashboardSections.map((section) => (
-          <section
-            key={section.title}
-            className="rounded-lg border border-border bg-white p-5"
-          >
-            <h3 className="text-base font-semibold text-foreground">
-              {section.title}
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              {section.description}
-            </p>
-          </section>
-        ))}
-      </div>
+
+      {isLoading ? <LoadingState message="Carregando dashboard..." /> : null}
+
+      {isError ? (
+        <ErrorState
+          title="Ocorreu um erro"
+          message="Não foi possível carregar os dados do dashboard."
+        />
+      ) : null}
+
+      {data && isDashboardEmpty(data) ? (
+        <EmptyState
+          title="Nenhum dado encontrado"
+          message="Sincronize os dados no backend para visualizar o dashboard."
+        />
+      ) : null}
+
+      {data && !isDashboardEmpty(data) ? (
+        <>
+          <OverviewCards items={data.overviewItems} />
+          <LatestSyncStatus
+            latestSync={data.latestSync}
+            items={data.syncItems}
+          />
+        </>
+      ) : null}
     </div>
   );
 }
