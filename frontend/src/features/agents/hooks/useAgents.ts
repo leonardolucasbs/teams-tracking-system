@@ -13,6 +13,7 @@ import {
   findAgents,
   updateAgent,
 } from "@/features/agents/services/agents-service";
+import { agentFiltersSchema } from "@/features/agents/schemas/agentSchema";
 import type {
   Agent,
   AgentFilters,
@@ -23,9 +24,12 @@ import {
   getAgentTeams,
   normalizeAgent,
 } from "@/features/agents/utils/agent-utils";
+import { TOAST_MESSAGES } from "@/constants/toast-constants";
+import { useToast } from "@/hooks/useToast";
 
 export function useAgents() {
   const queryClient = useQueryClient();
+  const { showSuccessToast } = useToast();
   const [filters, setFilters] = useState<AgentFilters>(defaultAgentFilters);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -40,6 +44,7 @@ export function useAgents() {
     mutationFn: createAgent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
+      showSuccessToast(TOAST_MESSAGES.success);
       closeForm();
     },
   });
@@ -54,6 +59,7 @@ export function useAgents() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
+      showSuccessToast(TOAST_MESSAGES.success);
       closeForm();
     },
   });
@@ -62,6 +68,7 @@ export function useAgents() {
     mutationFn: deactivateAgent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
+      showSuccessToast(TOAST_MESSAGES.success);
     },
   });
 
@@ -102,6 +109,14 @@ export function useAgents() {
     }
   }
 
+  function setValidatedFilters(nextFilters: AgentFilters) {
+    const parsedFilters = agentFiltersSchema.safeParse(nextFilters);
+
+    if (parsedFilters.success) {
+      setFilters(parsedFilters.data);
+    }
+  }
+
   return {
     agents: filteredAgents,
     allAgents: agents,
@@ -113,7 +128,7 @@ export function useAgents() {
     isError: agentsQuery.isError,
     isSubmitting: createMutation.isPending || updateMutation.isPending,
     isDeactivating: deactivateMutation.isPending,
-    setFilters,
+    setFilters: setValidatedFilters,
     openCreateForm,
     openEditForm,
     closeForm,

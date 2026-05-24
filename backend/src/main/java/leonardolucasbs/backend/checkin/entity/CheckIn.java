@@ -44,10 +44,8 @@ public class CheckIn {
     @Column(length = 40)
     private String source;
 
-    @Column(nullable = false)
     private Double latitude;
 
-    @Column(nullable = false)
     private Double longitude;
 
     @Column(length = 255)

@@ -22,3 +22,7 @@ export const ROUTE_MESSAGES = {
   loading: "Carregando rota do dia...",
   error: "Não foi possível carregar a rota do dia.",
 };
+
+export const ROUTE_VALIDATION_MESSAGES = {
+  agentIdRequired: "ID do agente é obrigatório.",
+};

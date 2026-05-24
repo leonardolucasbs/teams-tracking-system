@@ -10,8 +10,8 @@ CREATE TABLE check_ins (
                             origin VARCHAR(30) NOT NULL,
                             source VARCHAR(40),
 
-                            latitude DOUBLE NOT NULL,
-                            longitude DOUBLE NOT NULL,
+                            latitude DOUBLE,
+                            longitude DOUBLE,
 
                             address VARCHAR(255),
                             accuracy DOUBLE,
@@ -29,10 +29,10 @@ CREATE TABLE check_ins (
                                 FOREIGN KEY (agent_id) REFERENCES agents(id),
 
                             CONSTRAINT chk_check_ins_latitude
-                                CHECK (latitude BETWEEN -90 AND 90),
+                                CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
 
                             CONSTRAINT chk_check_ins_longitude
-                                CHECK (longitude BETWEEN -180 AND 180),
+                                CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180),
 
                             CONSTRAINT chk_check_ins_type
                                 CHECK (type IN (

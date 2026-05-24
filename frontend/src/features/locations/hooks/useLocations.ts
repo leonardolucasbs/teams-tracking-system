@@ -10,11 +10,9 @@ import {
   findLocationsByAgent,
   syncLocations,
 } from "@/features/locations/services/locations-service";
+import { locationFiltersSchema } from "@/features/locations/schemas/locationFilterSchema";
 import type { LocationFilters } from "@/features/locations/types/location-types";
-import {
-  canFetchLocations,
-  normalizeAgentId,
-} from "@/features/locations/utils/location-utils";
+import { normalizeAgentId } from "@/features/locations/utils/location-utils";
 
 export function useLocations() {
   const queryClient = useQueryClient();
@@ -50,8 +48,10 @@ export function useLocations() {
   };
 
   function submitFilters() {
-    if (canFetchLocations(filters)) {
-      setSubmittedAgentId(normalizeAgentId(filters.agentId));
+    const parsedFilters = locationFiltersSchema.safeParse(filters);
+
+    if (parsedFilters.success) {
+      setSubmittedAgentId(parsedFilters.data.agentId);
     }
   }
 }

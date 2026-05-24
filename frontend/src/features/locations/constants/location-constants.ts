@@ -22,3 +22,7 @@ export const LOCATION_MESSAGES = {
   loading: "Carregando localizações...",
   error: "Não foi possível carregar as localizações.",
 };
+
+export const LOCATION_VALIDATION_MESSAGES = {
+  agentIdRequired: "ID do agente é obrigatório.",
+};

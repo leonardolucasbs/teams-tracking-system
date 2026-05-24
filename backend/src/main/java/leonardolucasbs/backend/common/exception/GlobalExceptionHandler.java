@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -67,6 +68,23 @@ public class GlobalExceptionHandler {
                         "Validation error in the submitted fields",
                         request.getRequestURI(),
                         details
+                )
+        );
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleUnreadableMessage(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ErrorResponse(
+                        Instant.now(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Invalid Request Body",
+                        "Request body is invalid or has fields in an unsupported format",
+                        request.getRequestURI(),
+                        List.of()
                 )
         );
     }

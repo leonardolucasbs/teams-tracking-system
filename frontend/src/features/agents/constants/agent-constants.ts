@@ -65,6 +65,7 @@ export const AGENT_VALIDATION_MESSAGES = {
   phoneRequired: "Telefone é obrigatório.",
   emailInvalid: "Informe um e-mail válido.",
   statusRequired: "Status é obrigatório.",
+  batteryRequired: "Bateria é obrigatória.",
   batteryMin: "A bateria não pode ser menor que 0.",
   batteryMax: "A bateria não pode ser maior que 100.",
 };

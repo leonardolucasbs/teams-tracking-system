@@ -10,7 +10,7 @@ import {
   agentStatusLabels,
   agentStatusOptions,
 } from "@/features/agents/constants/agent-constants";
-import { agentSchema } from "@/features/agents/schemas/agent-schema";
+import { agentSchema } from "@/features/agents/schemas/agentSchema";
 import type {
   AgentFormProps,
   AgentFormValues,

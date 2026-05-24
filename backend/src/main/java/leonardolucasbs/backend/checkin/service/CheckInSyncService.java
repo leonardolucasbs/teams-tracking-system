@@ -5,6 +5,8 @@ import leonardolucasbs.backend.agent.repository.AgentRepository;
 import leonardolucasbs.backend.checkin.dto.ExternalCheckInResponseDTO;
 import leonardolucasbs.backend.checkin.dto.ExternalCheckInsResponseDTO;
 import leonardolucasbs.backend.checkin.entity.CheckIn;
+import leonardolucasbs.backend.checkin.enums.CheckInOrigin;
+import leonardolucasbs.backend.checkin.enums.ExternalCheckInSource;
 import leonardolucasbs.backend.checkin.mapper.CheckInMapper;
 import leonardolucasbs.backend.checkin.repository.CheckInRepository;
 import leonardolucasbs.backend.common.exception.BusinessException;
@@ -99,11 +101,24 @@ public class CheckInSyncService {
     }
 
     private boolean updateExistingExternalCheckIn(CheckIn checkIn, ExternalCheckInResponseDTO dto) {
+        if (isManualLocalCheckIn(checkIn)) {
+            log.warn(
+                    "Ignoring external check-in update because local manual data has priority. checkInId={}",
+                    checkIn.getId()
+            );
+            return false;
+        }
+
         ensureExternalEventIdDoesNotBelongToAnotherCheckIn(checkIn, dto);
         checkInMapper.updateFromExternalResponse(checkIn, dto);
         checkInRepository.save(checkIn);
 
         return true;
+    }
+
+    private boolean isManualLocalCheckIn(CheckIn checkIn) {
+        return checkIn.getOrigin() == CheckInOrigin.LOCAL
+                || ExternalCheckInSource.MANUAL.name().equals(checkIn.getSource());
     }
 
     private void ensureExternalEventIdDoesNotBelongToAnotherCheckIn(CheckIn checkIn, ExternalCheckInResponseDTO dto) {

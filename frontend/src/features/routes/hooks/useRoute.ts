@@ -6,12 +6,10 @@ import {
   ROUTE_QUERY_KEY,
   defaultRouteSearch,
 } from "@/features/routes/constants/route-constants";
+import { routeSearchSchema } from "@/features/routes/schemas/routeSearchSchema";
 import { findTodayRouteByAgent } from "@/features/routes/services/routes-service";
 import type { RouteSearch } from "@/features/routes/types/route-types";
-import {
-  canFetchRoute,
-  normalizeRouteAgentId,
-} from "@/features/routes/utils/route-utils";
+import { normalizeRouteAgentId } from "@/features/routes/utils/route-utils";
 
 export function useRoute() {
   const [search, setSearch] = useState<RouteSearch>(defaultRouteSearch);
@@ -35,8 +33,10 @@ export function useRoute() {
   };
 
   function submitSearch() {
-    if (canFetchRoute(search)) {
-      setSubmittedAgentId(normalizeRouteAgentId(search.agentId));
+    const parsedSearch = routeSearchSchema.safeParse(search);
+
+    if (parsedSearch.success) {
+      setSubmittedAgentId(parsedSearch.data.agentId);
     }
   }
 }
