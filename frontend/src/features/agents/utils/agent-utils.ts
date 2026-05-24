@@ -4,8 +4,8 @@ import type {
   AgentFormValues,
   AgentResponse,
   AgentStatus,
-} from "@/features/agents/types/agent.types";
-import { defaultAgentFormValues } from "@/features/agents/constants/agent.constants";
+} from "@/features/agents/types/agent-types";
+import { defaultAgentFormValues } from "@/features/agents/constants/agent-constants";
 
 export function normalizeAgent(agent: AgentResponse): Agent {
   return {

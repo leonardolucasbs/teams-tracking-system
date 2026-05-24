@@ -1,8 +1,8 @@
-import { AgentActions } from "@/features/agents/components/agent-actions";
-import { AgentStatusBadge } from "@/features/agents/components/agent-status-badge";
-import { agentRoleLabels } from "@/features/agents/constants/agent.constants";
-import type { AgentsTableProps } from "@/features/agents/types/agent.types";
-import { formatAgentDate } from "@/features/agents/utils/agent.utils";
+import { AgentActions } from "@/features/agents/components/AgentActions";
+import { AgentStatusBadge } from "@/features/agents/components/AgentStatusBadge";
+import { agentRoleLabels } from "@/features/agents/constants/agent-constants";
+import type { AgentsTableProps } from "@/features/agents/types/agent-types";
+import { formatAgentDate } from "@/features/agents/utils/agent-utils";
 
 export function AgentsTable({
   agents,

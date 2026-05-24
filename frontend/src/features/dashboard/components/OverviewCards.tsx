@@ -1,4 +1,4 @@
-import type { OverviewCardsProps } from "@/features/dashboard/types/dashboard.types";
+import type { OverviewCardsProps } from "@/features/dashboard/types/dashboard-types";
 
 export function OverviewCards({ items }: OverviewCardsProps) {
   return (

@@ -6,23 +6,23 @@ import {
   AGENT_CONFIRM_MESSAGES,
   AGENTS_QUERY_KEY,
   defaultAgentFilters,
-} from "@/features/agents/constants/agent.constants";
+} from "@/features/agents/constants/agent-constants";
 import {
   createAgent,
   deactivateAgent,
   findAgents,
   updateAgent,
-} from "@/features/agents/services/agents.service";
+} from "@/features/agents/services/agents-service";
 import type {
   Agent,
   AgentFilters,
   AgentFormValues,
-} from "@/features/agents/types/agent.types";
+} from "@/features/agents/types/agent-types";
 import {
   filterAgents,
   getAgentTeams,
   normalizeAgent,
-} from "@/features/agents/utils/agent.utils";
+} from "@/features/agents/utils/agent-utils";
 
 export function useAgents() {
   const queryClient = useQueryClient();

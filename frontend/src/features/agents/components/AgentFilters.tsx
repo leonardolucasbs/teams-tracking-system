@@ -2,8 +2,8 @@ import {
   activeFilterOptions,
   agentStatusLabels,
   agentStatusOptions,
-} from "@/features/agents/constants/agent.constants";
-import type { AgentFiltersProps } from "@/features/agents/types/agent.types";
+} from "@/features/agents/constants/agent-constants";
+import type { AgentFiltersProps } from "@/features/agents/types/agent-types";
 
 export function AgentFilters({
   filters,

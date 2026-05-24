@@ -1,9 +1,9 @@
 import {
   syncStatusLabels,
   syncTypeLabels,
-} from "@/features/dashboard/constants/dashboard.constants";
-import { formatDateTime } from "@/features/dashboard/utils/dashboard.utils";
-import type { LatestSyncStatusProps } from "@/features/dashboard/types/dashboard.types";
+} from "@/features/dashboard/constants/dashboard-constants";
+import { formatDateTime } from "@/features/dashboard/utils/dashboard-utils";
+import type { LatestSyncStatusProps } from "@/features/dashboard/types/dashboard-types";
 
 export function LatestSyncStatus({
   latestSync,

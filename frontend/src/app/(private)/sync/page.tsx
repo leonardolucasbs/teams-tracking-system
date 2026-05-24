@@ -1,4 +1,4 @@
-import { SyncPage } from "@/features/sync/components/sync-page";
+import { SyncPage } from "@/features/sync/components/SyncPage";
 
 export default function Page() {
   return <SyncPage />;

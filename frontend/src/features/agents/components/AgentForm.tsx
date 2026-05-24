@@ -3,20 +3,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   agentRoleLabels,
   agentRoleOptions,
   agentStatusLabels,
   agentStatusOptions,
-} from "@/features/agents/constants/agent.constants";
-import { agentSchema } from "@/features/agents/schemas/agent.schema";
+} from "@/features/agents/constants/agent-constants";
+import { agentSchema } from "@/features/agents/schemas/agent-schema";
 import type {
   AgentFormProps,
   AgentFormValues,
   AgentTextFieldProps,
-} from "@/features/agents/types/agent.types";
-import { getAgentFormValues } from "@/features/agents/utils/agent.utils";
+} from "@/features/agents/types/agent-types";
+import { getAgentFormValues } from "@/features/agents/utils/agent-utils";
 
 export function AgentForm({
   agent,

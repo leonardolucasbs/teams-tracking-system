@@ -1,6 +1,6 @@
 import type { UseFormRegister } from "react-hook-form";
 import type { z } from "zod";
-import type { agentSchema } from "@/features/agents/schemas/agent.schema";
+import type { agentSchema } from "@/features/agents/schemas/agent-schema";
 
 export type AgentRole = "INSTALLER" | "TECHNICIAN" | "VENDOR" | "MAINTENANCE";
 

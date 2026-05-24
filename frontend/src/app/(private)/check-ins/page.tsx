@@ -1,4 +1,4 @@
-import { CheckInsPage } from "@/features/check-ins/components/check-ins-page";
+import { CheckInsPage } from "@/features/check-ins/components/CheckInsPage";
 
 export default function Page() {
   return <CheckInsPage />;

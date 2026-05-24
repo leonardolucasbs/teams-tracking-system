@@ -1,10 +1,10 @@
-import { syncStatusLabels } from "@/features/dashboard/constants/dashboard.constants";
+import { syncStatusLabels } from "@/features/dashboard/constants/dashboard-constants";
 import type {
   DashboardData,
   DashboardOverviewItem,
   DashboardServiceData,
   SyncTypeSummaryResponse,
-} from "@/features/dashboard/types/dashboard.types";
+} from "@/features/dashboard/types/dashboard-types";
 
 export function mapDashboardData(data: DashboardServiceData): DashboardData {
   const latestSync = findLatestSync(data.syncSummary.items);

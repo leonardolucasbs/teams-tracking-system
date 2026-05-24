@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/shared/empty-state";
-import { ErrorState } from "@/components/shared/error-state";
-import { LoadingState } from "@/components/shared/loading-state";
-import { PageHeader } from "@/components/shared/page-header";
-import { AgentFilters } from "@/features/agents/components/agent-filters";
-import { AgentForm } from "@/features/agents/components/agent-form";
-import { AgentsTable } from "@/features/agents/components/agents-table";
-import { useAgents } from "@/features/agents/hooks/use-agents";
+import { Button } from "@/components/ui/Button";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
+import { LoadingState } from "@/components/shared/LoadingState";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { AgentFilters } from "@/features/agents/components/AgentFilters";
+import { AgentForm } from "@/features/agents/components/AgentForm";
+import { AgentsTable } from "@/features/agents/components/AgentsTable";
+import { useAgents } from "@/features/agents/hooks/useAgents";
 
 export function AgentsPage() {
   const {

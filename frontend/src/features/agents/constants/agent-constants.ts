@@ -3,7 +3,7 @@ import type {
   AgentFormValues,
   AgentRole,
   AgentStatus,
-} from "@/features/agents/types/agent.types";
+} from "@/features/agents/types/agent-types";
 
 export const AGENTS_QUERY_KEY = ["agents"];
 

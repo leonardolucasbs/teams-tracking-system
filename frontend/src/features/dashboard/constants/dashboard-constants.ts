@@ -10,7 +10,7 @@ import type {
   QuickNavigationItem,
   SyncStatus,
   SyncType,
-} from "@/features/dashboard/types/dashboard.types";
+} from "@/features/dashboard/types/dashboard-types";
 
 export const quickNavigationItems: QuickNavigationItem[] = [
   {

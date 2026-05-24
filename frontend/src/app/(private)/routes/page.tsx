@@ -1,4 +1,4 @@
-import { RoutesPage } from "@/features/routes/components/routes-page";
+import { RoutesPage } from "@/features/routes/components/RoutesPage";
 
 export default function Page() {
   return <RoutesPage />;

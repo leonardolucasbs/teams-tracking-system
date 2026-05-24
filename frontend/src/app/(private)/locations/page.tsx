@@ -1,4 +1,4 @@
-import { LocationsPage } from "@/features/locations/components/locations-page";
+import { LocationsPage } from "@/features/locations/components/LocationsPage";
 
 export default function Page() {
   return <LocationsPage />;

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import type { AgentActionsProps } from "@/features/agents/types/agent.types";
+import { Button } from "@/components/ui/Button";
+import type { AgentActionsProps } from "@/features/agents/types/agent-types";
 
 export function AgentActions({
   agent,

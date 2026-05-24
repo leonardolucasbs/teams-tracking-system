@@ -1,13 +1,13 @@
 "use client";
 
-import { EmptyState } from "@/components/shared/empty-state";
-import { ErrorState } from "@/components/shared/error-state";
-import { LoadingState } from "@/components/shared/loading-state";
-import { PageHeader } from "@/components/shared/page-header";
-import { LatestSyncStatus } from "@/features/dashboard/components/latest-sync-status";
-import { OverviewCards } from "@/features/dashboard/components/overview-cards";
-import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
-import { isDashboardEmpty } from "@/features/dashboard/utils/dashboard.utils";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ErrorState } from "@/components/shared/ErrorState";
+import { LoadingState } from "@/components/shared/LoadingState";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { LatestSyncStatus } from "@/features/dashboard/components/LatestSyncStatus";
+import { OverviewCards } from "@/features/dashboard/components/OverviewCards";
+import { useDashboard } from "@/features/dashboard/hooks/useDashboard";
+import { isDashboardEmpty } from "@/features/dashboard/utils/dashboard-utils";
 
 export function DashboardPage() {
   const { data, isLoading, isError } = useDashboard();

@@ -1,4 +1,4 @@
-import { AgentsPage } from "@/features/agents/components/agents-page";
+import { AgentsPage } from "@/features/agents/components/AgentsPage";
 
 export default function Page() {
   return <AgentsPage />;

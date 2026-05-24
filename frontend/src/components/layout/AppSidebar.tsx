@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { NavLink } from "@/components/layout/nav-link";
+import { NavLink } from "@/components/layout/NavLink";
 import { navigationRoutes } from "@/constants/routes";
 
 export function AppSidebar() {

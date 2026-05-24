@@ -5,7 +5,7 @@ import type {
   DashboardServiceData,
   GeofenceResponse,
   SyncSummaryResponse,
-} from "@/features/dashboard/types/dashboard.types";
+} from "@/features/dashboard/types/dashboard-types";
 
 export async function getDashboardData(): Promise<DashboardServiceData> {
   const [agents, checkIns, geofences, syncSummary] = await Promise.all([

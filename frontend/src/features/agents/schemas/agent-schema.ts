@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AGENT_VALIDATION_MESSAGES } from "@/features/agents/constants/agent.constants";
+import { AGENT_VALIDATION_MESSAGES } from "@/features/agents/constants/agent-constants";
 
 export const agentSchema = z.object({
   name: z.string().min(1, AGENT_VALIDATION_MESSAGES.nameRequired),

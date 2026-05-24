@@ -3,7 +3,7 @@ import { httpClient } from "@/services/http-client";
 import type {
   AgentFormValues,
   AgentResponse,
-} from "@/features/agents/types/agent.types";
+} from "@/features/agents/types/agent-types";
 
 export async function findAgents() {
   try {

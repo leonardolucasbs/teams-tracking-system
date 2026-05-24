@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 import type { ChildrenProps } from "@/types/component-props";
 
 export function AppShell({ children }: ChildrenProps) {
