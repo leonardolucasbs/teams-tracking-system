@@ -13,6 +13,9 @@ import leonardolucasbs.backend.checkin.mapper.CheckInMapper;
 import leonardolucasbs.backend.checkin.repository.CheckInRepository;
 import leonardolucasbs.backend.common.exception.BusinessException;
 import leonardolucasbs.backend.external.MediaApiClient;
+import leonardolucasbs.backend.sync.entity.SyncExecution;
+import leonardolucasbs.backend.sync.enums.SyncType;
+import leonardolucasbs.backend.sync.service.SyncExecutionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -47,6 +50,9 @@ class CheckInSyncServiceTest {
     @Spy
     private CheckInMapper checkInMapper;
 
+    @Mock
+    private SyncExecutionService syncExecutionService;
+
     @InjectMocks
     private CheckInSyncService checkInSyncService;
 
@@ -54,6 +60,8 @@ class CheckInSyncServiceTest {
     void syncCheckInsShouldCreateExternalCheckInWithoutDuplicate() {
         Agent agent = buildAgent();
         ExternalCheckInResponseDTO externalCheckIn = buildExternalCheckIn("seed_ci_004", "ext-event-checkin-002");
+        stubSyncExecution();
+        when(mediaApiClient.triggerCheckInsSync(null)).thenReturn(Mono.empty());
         when(mediaApiClient.findCheckIns(null, null))
                 .thenReturn(Mono.just(new ExternalCheckInsResponseDTO(List.of(externalCheckIn))));
         when(checkInRepository.findByExternalCheckInId(externalCheckIn.id())).thenReturn(Optional.empty());
@@ -86,6 +94,8 @@ class CheckInSyncServiceTest {
                 .longitude(-46.0)
                 .occurredAt(Instant.parse("2026-05-22T03:00:00Z"))
                 .build();
+        stubSyncExecution();
+        when(mediaApiClient.triggerCheckInsSync(null)).thenReturn(Mono.empty());
         when(mediaApiClient.findCheckIns(null, null))
                 .thenReturn(Mono.just(new ExternalCheckInsResponseDTO(List.of(externalCheckIn))));
         when(checkInRepository.findByExternalCheckInId(externalCheckIn.id())).thenReturn(Optional.of(existingCheckIn));
@@ -106,6 +116,8 @@ class CheckInSyncServiceTest {
                 .id(UUID.randomUUID())
                 .externalEventId(externalCheckIn.externalEventId())
                 .build();
+        stubSyncExecution();
+        when(mediaApiClient.triggerCheckInsSync(null)).thenReturn(Mono.empty());
         when(mediaApiClient.findCheckIns(null, null))
                 .thenReturn(Mono.just(new ExternalCheckInsResponseDTO(List.of(externalCheckIn))));
         when(checkInRepository.findByExternalCheckInId(externalCheckIn.id())).thenReturn(Optional.empty());
@@ -116,6 +128,16 @@ class CheckInSyncServiceTest {
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("External check-in conflict detected. externalEventId already exists: "
                         + externalCheckIn.externalEventId());
+    }
+
+    private void stubSyncExecution() {
+        SyncExecution execution = SyncExecution.builder()
+                .id(UUID.randomUUID())
+                .syncType(SyncType.CHECK_INS)
+                .build();
+
+        when(syncExecutionService.start(SyncType.CHECK_INS)).thenReturn(execution);
+        when(syncExecutionService.getLastSuccessfulSyncToken(SyncType.CHECK_INS)).thenReturn(null);
     }
 
     private Agent buildAgent() {

@@ -2,9 +2,12 @@ package leonardolucasbs.backend.external;
 
 import leonardolucasbs.backend.checkin.dto.ExternalCheckInsResponseDTO;
 import leonardolucasbs.backend.checkin.enums.CheckInType;
+import leonardolucasbs.backend.external.dto.ExternalCheckInSyncResponseDTO;
+import leonardolucasbs.backend.external.dto.ExternalFullSyncResponseDTO;
 import leonardolucasbs.backend.external.dto.ExternalAgentLocationsResponseDTO;
 import leonardolucasbs.backend.external.dto.ExternalAgentsResponseDTO;
 import leonardolucasbs.backend.common.exception.ExternalApiException;
+import leonardolucasbs.backend.external.dto.ExternalSyncResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -92,6 +95,59 @@ public class MediaApiClient {
                 })
                 .retrieve())
                 .bodyToMono(ExternalCheckInsResponseDTO.class)
+                .retryWhen(
+                        Retry.backoff(3, Duration.ofSeconds(2))
+                                .filter(this::isRetryable)
+                );
+    }
+
+    public Mono<ExternalSyncResponseDTO> triggerAgentsSync() {
+        return triggerSimpleSync("/api/v1/sync/agents");
+    }
+
+    public Mono<ExternalSyncResponseDTO> triggerLocationsSync() {
+        return triggerSimpleSync("/api/v1/sync/locations");
+    }
+
+    public Mono<ExternalCheckInSyncResponseDTO> triggerCheckInsSync(String syncToken) {
+        return withExternalApiErrorHandling(webClient.post()
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder.path("/api/v1/sync/check-ins");
+
+                    if (syncToken != null && !syncToken.isBlank()) {
+                        builder.queryParam("syncToken", syncToken);
+                    }
+
+                    return builder.build();
+                })
+                .retrieve())
+                .bodyToMono(ExternalCheckInSyncResponseDTO.class)
+                .retryWhen(
+                        Retry.backoff(3, Duration.ofSeconds(2))
+                                .filter(this::isRetryable)
+                );
+    }
+
+    public Mono<ExternalSyncResponseDTO> triggerGeofencesSync() {
+        return triggerSimpleSync("/api/v1/sync/geofences");
+    }
+
+    public Mono<ExternalFullSyncResponseDTO> triggerFullSync() {
+        return withExternalApiErrorHandling(webClient.post()
+                .uri("/api/v1/sync/all")
+                .retrieve())
+                .bodyToMono(ExternalFullSyncResponseDTO.class)
+                .retryWhen(
+                        Retry.backoff(3, Duration.ofSeconds(2))
+                                .filter(this::isRetryable)
+                );
+    }
+
+    private Mono<ExternalSyncResponseDTO> triggerSimpleSync(String path) {
+        return withExternalApiErrorHandling(webClient.post()
+                .uri(path)
+                .retrieve())
+                .bodyToMono(ExternalSyncResponseDTO.class)
                 .retryWhen(
                         Retry.backoff(3, Duration.ofSeconds(2))
                                 .filter(this::isRetryable)

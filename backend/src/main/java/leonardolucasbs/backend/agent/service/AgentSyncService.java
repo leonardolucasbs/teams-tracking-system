@@ -8,6 +8,9 @@ import leonardolucasbs.backend.external.dto.ExternalAgentsResponseDTO;
 import leonardolucasbs.backend.agent.entity.Agent;
 import leonardolucasbs.backend.agent.repository.AgentRepository;
 import leonardolucasbs.backend.external.MediaApiClient;
+import leonardolucasbs.backend.sync.entity.SyncExecution;
+import leonardolucasbs.backend.sync.enums.SyncType;
+import leonardolucasbs.backend.sync.service.SyncExecutionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,9 +26,13 @@ public class AgentSyncService {
     private final MediaApiClient mediaApiClient;
     private final AgentRepository agentRepository;
     private final AgentMapper agentMapper;
+    private final SyncExecutionService syncExecutionService;
 
     @Transactional
     public void syncAgents() {
+        SyncExecution execution = syncExecutionService.start(SyncType.AGENTS);
+        int itemsProcessed = 0;
+
         try {
             int page = 0;
             String syncToken = null;
@@ -41,44 +48,48 @@ public class AgentSyncService {
                 }
 
                 for (ExternalAgentResponseDTO externalAgent : response.data()) {
-                    saveOrUpdateAgent(externalAgent);
+                    if (saveOrUpdateAgent(externalAgent)) {
+                        itemsProcessed++;
+                    }
                 }
 
                 hasMorePages = response.data().size() == PAGE_SIZE;
                 page++;
             }
 
+            syncExecutionService.markSuccess(execution.getId(), itemsProcessed, null);
             log.info("Agent synchronization completed successfully.");
 
         } catch (Exception exception) {
+            syncExecutionService.markFailure(execution.getId(), exception.getMessage());
             log.error("Failed to synchronize agents: {}", exception.getMessage(), exception);
         }
     }
 
-    private void saveOrUpdateAgent(ExternalAgentResponseDTO dto) {
-        agentRepository.findById(dto.id())
-                .ifPresentOrElse(
-                        existingAgent -> updateExistingExternalAgent(existingAgent, dto),
-                        () -> createExternalAgentOrDetectConflict(dto)
-                );
+    private boolean saveOrUpdateAgent(ExternalAgentResponseDTO dto) {
+        return agentRepository.findById(dto.id())
+                .map(existingAgent -> updateExistingExternalAgent(existingAgent, dto))
+                .orElseGet(() -> createExternalAgentOrDetectConflict(dto));
     }
 
-    private void updateExistingExternalAgent(Agent agent, ExternalAgentResponseDTO dto) {
+    private boolean updateExistingExternalAgent(Agent agent, ExternalAgentResponseDTO dto) {
         if (agent.getSource() == AgentSource.LOCAL) {
             log.warn("Skipping external update for local agent with id: {}", agent.getId());
-            return;
+            return false;
         }
 
         if (isExternalDataOlder(agent, dto)) {
             log.warn("Skipping stale external update for agent with id: {}", agent.getId());
-            return;
+            return false;
         }
 
         agentMapper.updateFromExternalResponse(agent, dto);
         agentRepository.save(agent);
+
+        return true;
     }
 
-    private void createExternalAgentOrDetectConflict(ExternalAgentResponseDTO dto) {
+    private boolean createExternalAgentOrDetectConflict(ExternalAgentResponseDTO dto) {
         agentRepository.findByExternalId(dto.externalId())
                 .ifPresent(conflictingAgent -> {
                     throw new BusinessException(
@@ -89,6 +100,8 @@ public class AgentSyncService {
 
         Agent agent = agentMapper.fromExternalResponse(dto);
         agentRepository.save(agent);
+
+        return true;
     }
 
     private boolean isExternalDataOlder(Agent agent, ExternalAgentResponseDTO dto) {
