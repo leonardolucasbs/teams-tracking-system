@@ -8,6 +8,7 @@ import leonardolucasbs.backend.external.dto.ExternalAgentLocationsResponseDTO;
 import leonardolucasbs.backend.external.dto.ExternalAgentsResponseDTO;
 import leonardolucasbs.backend.common.exception.ExternalApiException;
 import leonardolucasbs.backend.external.dto.ExternalSyncResponseDTO;
+import leonardolucasbs.backend.geofence.dto.ExternalGeofencesResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -130,6 +131,17 @@ public class MediaApiClient {
 
     public Mono<ExternalSyncResponseDTO> triggerGeofencesSync() {
         return triggerSimpleSync("/api/v1/sync/geofences");
+    }
+
+    public Mono<ExternalGeofencesResponseDTO> findGeofences() {
+        return withExternalApiErrorHandling(webClient.get()
+                .uri("/api/v1/geofences/")
+                .retrieve())
+                .bodyToMono(ExternalGeofencesResponseDTO.class)
+                .retryWhen(
+                        Retry.backoff(3, Duration.ofSeconds(2))
+                                .filter(this::isRetryable)
+                );
     }
 
     public Mono<ExternalFullSyncResponseDTO> triggerFullSync() {

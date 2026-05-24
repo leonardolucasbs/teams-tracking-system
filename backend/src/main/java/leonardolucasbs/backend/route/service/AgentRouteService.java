@@ -38,7 +38,10 @@ public class AgentRouteService {
         Instant end = today.plusDays(1).atStartOfDay(zone).toInstant();
 
         List<AgentLocation> locations = agentLocationRepository
-                .findByAgentIdAndLastSeenBetweenOrderByLastSeenAsc(agentId, start, end);
+                .findByAgentIdAndLastSeenBetweenOrderByLastSeenAsc(agentId, start, end)
+                .stream()
+                .filter(this::hasAcceptableAccuracy)
+                .toList();
 
         List<AgentRoutePointDTO> points = locations
                 .stream()
@@ -55,6 +58,10 @@ public class AgentRouteService {
                 getEndTime(locations),
                 points
         );
+    }
+
+    private boolean hasAcceptableAccuracy(AgentLocation location) {
+        return location.getAccuracy() == null || location.getAccuracy() <= 50;
     }
 
     private Double calculateTotalDistanceInKm(List<AgentLocation> locations) {
