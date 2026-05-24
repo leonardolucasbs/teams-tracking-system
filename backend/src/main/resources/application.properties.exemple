@@ -16,3 +16,4 @@ media-api.api-key=${MEDIA_API_KEY}
 
 schedulers.agents.fixed-delay=60s
 schedulers.locations.fixed-delay=30s
+schedulers.check-ins.fixed-delay=60000
