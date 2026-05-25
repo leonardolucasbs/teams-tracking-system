@@ -1,73 +1,245 @@
 # teams-tracking-system
+ 
 
-## Quick Start with Docker
+Sistema fullstack para acompanhamento de equipes externas em campo.
 
-### Prerequisites
-- Docker and Docker Compose installed
-- Create a `.env` file from `.env.example`
-- Update `MEDIA_API_KEY` in `.env` with your API key
+O projeto permite gerenciar agentes, sincronizar posições, registrar check-ins, consultar a rota do dia, visualizar áreas operacionais, acompanhar o histórico de sincronizações e consumir uma API externa de mídia/localização somente pelo backend.
 
-### Running the Project
+## Funcionalidades
 
-1. **Create environment file:**
-   ```bash
-   cp .env.example .env
-   ```
+- Gestão de agentes de campo.
+- Rastreamento e histórico de localizações.
+- Histórico da rota do dia com cálculo de distância por Haversine.
+- Registro manual e sincronização de check-ins.
+- Áreas operacionais com visualização de coordenadas em mapa.
+- Sincronizações automáticas por schedulers independentes.
+- Histórico e monitoramento de sincronizações.
+- Integração com API externa usando `WebClient`.
+- Frontend em Next.js com App Router.
 
-2. **Update environment variables:**
-   - Edit `.env` and set `MEDIA_API_KEY=your_actual_api_key`
-   - Other variables have sensible defaults for local development
+## Tecnologias
 
-3. **Start all services:**
-   ```bash
-   docker compose up --build
-   ```
+### Backend
 
-4. **Access the services:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:8080
-   - MySQL: localhost:3306
+- Java 21
+- Spring Boot 3
+- Spring Data JPA
+- MySQL
+- Flyway
+- WebClient
+- Docker
 
-5. **View logs:**
-   ```bash
-   docker compose logs -f
-   ```
+### Frontend
 
-6. **Stop services:**
-   ```bash
-   docker compose down
-   ```
+- Next.js 16
+- App Router
+- Tailwind CSS
+- TanStack Query
+- React Hook Form
+- Zod
+- shadcn/ui
+- Leaflet e React Leaflet
 
-7. **Remove data volume (clean slate):**
-   ```bash
-   docker compose down -v
-   ```
+### Infraestrutura
 
-### Docker Setup Details
+- Docker
+- Docker Compose
+- MySQL 8
 
-- **MySQL**: Runs on port 3306 with data persisted in a Docker volume
-- **Backend**: Spring Boot application running on port 8080
-  - Waits for MySQL healthcheck before starting
-  - Runs Flyway migrations automatically
-  - Reads configuration from environment variables
-- **Frontend**: Next.js application running on port 3000
-  - Uses `NEXT_PUBLIC_API_URL` to connect to the backend
+## Estrutura do projeto
 
-### Local Development (without Docker)
+```txt
+teams-tracking-system/
+├── backend/
+├── frontend/
+├── docs/
+├── docker-compose.yml
+└── README.md
+```
 
-If you prefer to run without Docker:
+- `backend/`: API Spring Boot, serviços de sincronização, schedulers, regras de negócio e persistência.
+- `frontend/`: interface operacional em Next.js.
+- `docs/`: decisões técnicas do projeto.
+- `docker-compose.yml`: sobe MySQL, backend e frontend.
 
-1. **Backend:**
-   ```bash
-   cd backend
-   ./gradlew bootRun
-   ```
+## Variáveis de ambiente
 
-2. **Frontend:**
-   ```bash
-   cd frontend
-   npm install
-   npm run dev
-   ```
+O projeto usa variáveis de ambiente. como a chave da API externa, não devem ser versionados.
 
-Ensure MySQL is running locally on port 3306.
+Crie o arquivo `.env` a partir do exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Principais variáveis:
+
+```env
+MYSQL_DATABASE=teams_tracking_system_db
+MYSQL_USER=teams_user
+MYSQL_PASSWORD=teams_password
+MYSQL_ROOT_PASSWORD=root_password
+
+SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/teams_tracking_system_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+SPRING_DATASOURCE_USERNAME=teams_user
+SPRING_DATASOURCE_PASSWORD=teams_password
+
+MEDIA_API_BASE_URL=https://desafio-media.onrender.com
+MEDIA_API_KEY=your_api_key_here
+
+NEXT_PUBLIC_API_URL=http://localhost:8080
+APP_CORS_ALLOWED_ORIGINS=http://localhost:3000
+```
+
+## Executando com Docker
+
+1. Clone o repositório.
+
+2. Crie o arquivo de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+3. Preencha as variáveis obrigatórias no `.env`, principalmente:
+
+```env
+MEDIA_API_KEY=your_api_key_here
+```
+
+4. Suba todos os serviços:
+
+```bash
+docker compose up --build
+```
+
+5. Acesse:
+
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8080
+- MySQL: `localhost:3306`
+- Swagger da API: http://localhost:8080/swagger-ui/index.html
+
+6. Para acompanhar logs:
+
+```bash
+docker compose logs -f
+```
+
+7. Para parar os containers:
+
+```bash
+docker compose down
+```
+
+8. Para parar e remover volumes:
+
+```bash
+docker compose down -v
+```
+
+## Serviços Docker
+
+- `mysql`: banco de dados MySQL 8 usado pelo backend.
+- `backend`: API Spring Boot publicada na porta `8080`.
+- `frontend`: aplicação Next.js publicada na porta `3000`.
+
+O MySQL persiste dados em um volume Docker chamado `mysql_data`. O backend se conecta ao banco usando o nome do serviço `mysql` dentro da rede Docker. As migrations do Flyway são executadas automaticamente na inicialização do backend. O frontend usa `NEXT_PUBLIC_API_URL` para chamar a API interna do backend.
+
+## Documentação Swagger
+
+A API backend possui documentação Swagger gerada pelo Springdoc.
+
+Com o backend rodando, acesse:
+
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+
+## Endpoints úteis
+
+### Agentes
+
+- `GET /api/agents`
+- `POST /api/agents`
+- `GET /api/agents/{id}`
+- `PUT /api/agents/{id}`
+- `PATCH /api/agents/{id}/activate`
+- `PATCH /api/agents/{id}/deactivate`
+- `DELETE /api/agents/{id}`
+
+### Localizações
+
+- `POST /api/location/sync`
+- `GET /api/location/{id}`
+- `GET /api/location/agents/{agentId}`
+- `GET /api/location/agents/{agentId}/today-route`
+
+### Rotas
+
+- `GET /api/routes/agents/{agentId}/today`
+
+### Check-ins
+
+- `GET /api/check-ins`
+- `POST /api/check-ins`
+- `GET /api/check-ins/{id}`
+- `GET /api/check-ins/agents/{agentId}`
+- `GET /api/check-ins/agents/{agentId}/today`
+- `DELETE /api/check-ins/{id}`
+- `POST /api/check-ins/sync`
+
+### Sincronizações
+
+- `GET /api/sync/summary`
+- `GET /api/sync/executions`
+- `GET /api/sync/executions/type/{syncType}`
+- `GET /api/sync/executions/latest/{syncType}`
+
+### Áreas operacionais
+
+- `GET /api/geofences`
+- `GET /api/geofences/{id}`
+- `GET /api/geofences/type/{type}`
+- `POST /api/geofences/sync`
+
+## Decisões técnicas
+
+As decisões técnicas completas estão em [docs/decisoesTecnicas.md](docs/decisoesTecnicas.md).
+
+Principais decisões:
+
+- A API externa é consumida somente pelo backend.
+- `WebClient` foi usado no lugar de `RestTemplate`.
+- Agentes usam ID textual porque a API externa retorna identificadores em `String`.
+- Localizações são persistidas localmente para formar histórico e rota do dia.
+- A distância da rota é calculada com Haversine.
+- Check-ins usam UUID interno e armazenam IDs externos separadamente.
+- `SyncExecution` registra histórico de sincronizações e `syncToken`.
+- Schedulers são independentes por tipo de sincronização.
+- O frontend oculta IDs técnicos e usa nomes de agentes na interface.
+
+## Execução local sem Docker
+
+Também é possível executar os serviços localmente, desde que exista um MySQL acessível e as variáveis de ambiente estejam configuradas.
+
+Backend:
+
+```bash
+cd backend
+./gradlew bootRun
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## Observações
+
+- A chave da API externa deve ser configurada por variável de ambiente.
+- O frontend nunca chama a API externa diretamente.
+- O backend é responsável por sincronização, persistência, regras de negócio e tratamento de erros.
+- Em Docker, o backend usa o serviço `mysql`; fora do Docker, ajuste `SPRING_DATASOURCE_URL` para o endereço do banco local.
