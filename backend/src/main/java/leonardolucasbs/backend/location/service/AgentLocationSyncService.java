@@ -16,12 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AgentLocationSyncService {
-
-    private static final int PAGE_SIZE = 50;
 
     private final MediaApiClient mediaApiClient;
     private final AgentRepository agentRepository;
@@ -35,27 +36,21 @@ public class AgentLocationSyncService {
         int itemsProcessed = 0;
 
         try {
-            int page = 0;
-            String syncToken = null;
-            boolean hasMorePages = true;
+            mediaApiClient.triggerLocationsSync().block();
+            ExternalAgentLocationsResponseDTO response = mediaApiClient.findLocations().block();
 
-            while (hasMorePages) {
-                ExternalAgentLocationsResponseDTO response = mediaApiClient
-                        .findLocations(page, PAGE_SIZE, syncToken)
-                        .block();
+            if (response == null || response.data() == null || response.data().isEmpty()) {
+                syncExecutionService.markSuccess(execution.getId(), itemsProcessed, null);
+                log.info("No external agent locations found to synchronize.");
+                return;
+            }
 
-                if (response == null || response.data() == null || response.data().isEmpty()) {
-                    break;
+            Instant capturedAt = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+
+            for (ExternalAgentLocationResponseDTO externalLocation : response.data()) {
+                if (saveLocationIfNotExists(externalLocation, capturedAt)) {
+                    itemsProcessed++;
                 }
-
-                for (ExternalAgentLocationResponseDTO externalLocation : response.data()) {
-                    if (saveLocationIfNotExists(externalLocation)) {
-                        itemsProcessed++;
-                    }
-                }
-
-                hasMorePages = response.data().size() == PAGE_SIZE;
-                page++;
             }
 
             syncExecutionService.markSuccess(execution.getId(), itemsProcessed, null);
@@ -67,7 +62,7 @@ public class AgentLocationSyncService {
         }
     }
 
-    private boolean saveLocationIfNotExists(ExternalAgentLocationResponseDTO dto) {
+    private boolean saveLocationIfNotExists(ExternalAgentLocationResponseDTO dto, Instant capturedAt) {
         if (dto.accuracy() != null && dto.accuracy() > 50) {
             log.warn(
                     "Ignoring location because accuracy is greater than 50 meters. agentId={}, accuracy={}",
@@ -77,7 +72,7 @@ public class AgentLocationSyncService {
             return false;
         }
 
-        String locationId = locationMapper.generateLocationId(dto);
+        String locationId = locationMapper.generateLocationId(dto, capturedAt);
 
         if (locationRepository.existsById(locationId)) {
             return false;
@@ -91,7 +86,7 @@ public class AgentLocationSyncService {
             return false;
         }
 
-        AgentLocation location = locationMapper.fromExternalResponse(dto, agent);
+        AgentLocation location = locationMapper.fromExternalResponse(dto, agent, capturedAt);
 
         locationRepository.save(location);
 

@@ -12,6 +12,26 @@ export function normalizeRouteAgentId(agentId: string) {
   return agentId.trim();
 }
 
+export function getRouteInitialAgentId() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  return new URLSearchParams(window.location.search).get("agentId") ?? "";
+}
+
+export function subscribeToRouteUrlChanges(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  window.addEventListener("popstate", onStoreChange);
+
+  return () => {
+    window.removeEventListener("popstate", onStoreChange);
+  };
+}
+
 export function formatRouteDate(value: string | null | undefined) {
   return formatBrazilianDate(value);
 }

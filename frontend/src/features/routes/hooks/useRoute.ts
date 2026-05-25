@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import {
   ROUTE_QUERY_KEY,
   defaultRouteSearch,
@@ -9,12 +9,21 @@ import {
 import { routeSearchSchema } from "@/features/routes/schemas/route-search-schema";
 import { findTodayRouteByAgent } from "@/features/routes/services/routes-service";
 import type { RouteSearch } from "@/features/routes/types/route-types";
-import { normalizeRouteAgentId } from "@/features/routes/utils/route-utils";
+import {
+  getRouteInitialAgentId,
+  normalizeRouteAgentId,
+  subscribeToRouteUrlChanges,
+} from "@/features/routes/utils/route-utils";
 import { useAgentSearch } from "@/hooks/useAgentSearch";
 
 export function useRoute() {
+  const initialAgentId = useSyncExternalStore(
+    subscribeToRouteUrlChanges,
+    getRouteInitialAgentId,
+    () => "",
+  );
   const [search, setSearch] = useState<RouteSearch>(defaultRouteSearch);
-  const agentSearch = useAgentSearch();
+  const agentSearch = useAgentSearch(initialAgentId);
   const normalizedAgentId = normalizeRouteAgentId(agentSearch.selectedAgent?.id ?? "");
 
   const routeQuery = useQuery({

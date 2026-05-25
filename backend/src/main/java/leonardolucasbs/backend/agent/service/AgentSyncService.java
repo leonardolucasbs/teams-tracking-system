@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AgentSyncService {
 
-    private static final int PAGE_SIZE = 50;
-
     private final MediaApiClient mediaApiClient;
     private final AgentRepository agentRepository;
     private final AgentMapper agentMapper;
@@ -34,27 +32,19 @@ public class AgentSyncService {
         int itemsProcessed = 0;
 
         try {
-            int page = 0;
-            String syncToken = null;
-            boolean hasMorePages = true;
+            mediaApiClient.triggerAgentsSync().block();
+            ExternalAgentsResponseDTO response = mediaApiClient.findAgents().block();
 
-            while (hasMorePages) {
-                ExternalAgentsResponseDTO response = mediaApiClient
-                        .findAgents(page, PAGE_SIZE, syncToken)
-                        .block();
+            if (response == null || response.data() == null || response.data().isEmpty()) {
+                syncExecutionService.markSuccess(execution.getId(), itemsProcessed, null);
+                log.info("No external agents found to synchronize.");
+                return;
+            }
 
-                if (response == null || response.data() == null || response.data().isEmpty()) {
-                    break;
+            for (ExternalAgentResponseDTO externalAgent : response.data()) {
+                if (saveOrUpdateAgent(externalAgent)) {
+                    itemsProcessed++;
                 }
-
-                for (ExternalAgentResponseDTO externalAgent : response.data()) {
-                    if (saveOrUpdateAgent(externalAgent)) {
-                        itemsProcessed++;
-                    }
-                }
-
-                hasMorePages = response.data().size() == PAGE_SIZE;
-                page++;
             }
 
             syncExecutionService.markSuccess(execution.getId(), itemsProcessed, null);

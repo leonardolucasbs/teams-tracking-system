@@ -8,6 +8,7 @@ import {
   formatCoordinate,
   formatLocationDate,
   formatOptionalNumber,
+  getAgentRouteHref,
 } from "@/features/locations/utils/location-utils";
 import { usePagination } from "@/hooks/usePagination";
 
@@ -64,7 +65,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
                 </td>
                 <td className="px-4 py-3">
                   <Link
-                    href="/routes"
+                    href={getAgentRouteHref(location.agentId)}
                     className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
                   >
                     Ver rota

@@ -9,6 +9,8 @@ export const AGENTS_QUERY_KEY = ["agents"];
 
 export const AGENT_DEFAULT_BATTERY = 100;
 
+export const AGENT_DEFAULT_STATUS: AgentStatus = "OFFLINE";
+
 export const agentRoleOptions: AgentRole[] = [
   "INSTALLER",
   "TECHNICIAN",
@@ -56,7 +58,6 @@ export const defaultAgentFormValues: AgentFormValues = {
   phone: "",
   email: "",
   active: true,
-  status: "ONLINE",
 };
 
 export const AGENT_VALIDATION_MESSAGES = {
@@ -65,7 +66,6 @@ export const AGENT_VALIDATION_MESSAGES = {
   teamRequired: "Equipe é obrigatória.",
   phoneRequired: "Telefone é obrigatório.",
   emailInvalid: "Informe um e-mail válido.",
-  statusRequired: "Status é obrigatório.",
 };
 
 export const AGENT_CONFIRM_MESSAGES = {

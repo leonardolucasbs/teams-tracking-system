@@ -30,20 +30,9 @@ public class MediaApiClient {
 
     private final WebClient webClient;
 
-    public Mono<ExternalAgentsResponseDTO> findAgents(int page, int size, String syncToken) {
+    public Mono<ExternalAgentsResponseDTO> findAgents() {
         return withExternalApiErrorHandling(webClient.get()
-                .uri(uriBuilder -> {
-                    var builder = uriBuilder
-                            .path("/api/v1/agents")
-                            .queryParam("page", page)
-                            .queryParam("size", size);
-
-                    if (syncToken != null && !syncToken.isBlank()) {
-                        builder.queryParam("syncToken", syncToken);
-                    }
-
-                    return builder.build();
-                })
+                .uri("/api/v1/agents/")
                 .retrieve())
                 .bodyToMono(ExternalAgentsResponseDTO.class)
                 .retryWhen(externalApiRetry());
@@ -59,20 +48,9 @@ public class MediaApiClient {
                 || exception.getStatusCode() >= 500;
     }
 
-    public Mono<ExternalAgentLocationsResponseDTO> findLocations(int page, int size, String syncToken) {
+    public Mono<ExternalAgentLocationsResponseDTO> findLocations() {
         return withExternalApiErrorHandling(webClient.get()
-                .uri(uriBuilder -> {
-                    var builder = uriBuilder
-                            .path("/api/v1/locations")
-                            .queryParam("page", page)
-                            .queryParam("size", size);
-
-                    if (syncToken != null && !syncToken.isBlank()) {
-                        builder.queryParam("syncToken", syncToken);
-                    }
-
-                    return builder.build();
-                })
+                .uri("/api/v1/locations/")
                 .retrieve())
                 .bodyToMono(ExternalAgentLocationsResponseDTO.class)
                 .retryWhen(externalApiRetry());

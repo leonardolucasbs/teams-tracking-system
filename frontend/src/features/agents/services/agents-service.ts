@@ -4,7 +4,10 @@ import type {
   AgentFormValues,
   AgentResponse,
 } from "@/features/agents/types/agent-types";
-import { AGENT_DEFAULT_BATTERY } from "@/features/agents/constants/agent-constants";
+import {
+  AGENT_DEFAULT_BATTERY,
+  AGENT_DEFAULT_STATUS,
+} from "@/features/agents/constants/agent-constants";
 
 export async function findAgents() {
   try {
@@ -44,14 +47,25 @@ export async function deactivateAgent(id: string) {
 
 function toCreateAgentPayload(values: AgentFormValues) {
   return {
-    ...toUpdateAgentPayload(values),
+    name: values.name,
+    role: values.role,
+    team: values.team,
+    phone: values.phone,
+    email: values.email?.trim() || "",
+    active: values.active,
     battery: AGENT_DEFAULT_BATTERY,
+    status: AGENT_DEFAULT_STATUS,
   };
 }
 
 function toUpdateAgentPayload(values: AgentFormValues) {
   return {
-    ...values,
-    email: values.email?.trim() || null,
+    name: values.name,
+    role: values.role,
+    team: values.team,
+    phone: values.phone,
+    email: values.email?.trim() || "",
+    status: "OFFLINE",
+    active: values.active,
   };
 }

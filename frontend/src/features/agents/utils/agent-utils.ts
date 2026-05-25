@@ -45,7 +45,6 @@ export function getAgentFormValues(agent: Agent | null): AgentFormValues {
     phone: agent.phone,
     email: agent.email ?? "",
     active: agent.active,
-    status: agent.status,
   };
 }
 

@@ -7,6 +7,7 @@ import leonardolucasbs.backend.location.entity.AgentLocation;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.UUID;
 
 @Component
@@ -16,8 +17,16 @@ public class AgentLocationMapper {
             ExternalAgentLocationResponseDTO dto,
             Agent agent
     ) {
+        return fromExternalResponse(dto, agent, dto.lastSeen());
+    }
+
+    public AgentLocation fromExternalResponse(
+            ExternalAgentLocationResponseDTO dto,
+            Agent agent,
+            Instant capturedAt
+    ) {
         return AgentLocation.builder()
-                .id(generateLocationId(dto))
+                .id(generateLocationId(dto, capturedAt))
                 .agent(agent)
                 .externalId(dto.externalId())
                 .agentName(dto.name())
@@ -28,7 +37,7 @@ public class AgentLocationMapper {
                 .speed(dto.speed())
                 .battery(dto.battery())
                 .status(dto.status())
-                .lastSeen(dto.lastSeen())
+                .lastSeen(capturedAt)
                 .build();
     }
 
@@ -52,9 +61,13 @@ public class AgentLocationMapper {
     }
 
     public String generateLocationId(ExternalAgentLocationResponseDTO dto) {
+        return generateLocationId(dto, dto.lastSeen());
+    }
+
+    public String generateLocationId(ExternalAgentLocationResponseDTO dto, Instant capturedAt) {
         String rawId = dto.agentId()
                 + "|"
-                + dto.lastSeen()
+                + capturedAt
                 + "|"
                 + dto.latitude()
                 + "|"

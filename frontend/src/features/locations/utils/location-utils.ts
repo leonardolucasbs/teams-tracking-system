@@ -12,6 +12,10 @@ export function normalizeAgentId(agentId: string) {
   return agentId.trim();
 }
 
+export function getAgentRouteHref(agentId: string) {
+  return `/routes?agentId=${encodeURIComponent(agentId)}`;
+}
+
 export function formatLocationDate(value: string | null | undefined) {
   return formatBrazilianDateTime(value);
 }

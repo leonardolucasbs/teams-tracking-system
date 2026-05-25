@@ -7,8 +7,6 @@ import { Button } from "@/components/ui/Button";
 import {
   agentRoleLabels,
   agentRoleOptions,
-  agentStatusLabels,
-  agentStatusOptions,
 } from "@/features/agents/constants/agent-constants";
 import { agentSchema } from "@/features/agents/schemas/agent-schema";
 import type {
@@ -108,25 +106,6 @@ export function AgentForm({
               error={errors.email?.message}
               type="email"
             />
-
-            <label className="space-y-2 text-sm font-medium text-foreground">
-              <span>Status</span>
-              <select
-                {...register("status")}
-                className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm"
-              >
-                {agentStatusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {agentStatusLabels[status]}
-                  </option>
-                ))}
-              </select>
-              {errors.status?.message ? (
-                <p className="text-xs text-destructive">
-                  {errors.status.message}
-                </p>
-              ) : null}
-            </label>
 
             <label className="flex items-center gap-2 pt-7 text-sm font-medium text-foreground">
               <input

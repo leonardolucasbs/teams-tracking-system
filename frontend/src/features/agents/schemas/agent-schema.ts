@@ -16,9 +16,6 @@ export const agentSchema = z.object({
       AGENT_VALIDATION_MESSAGES.emailInvalid,
     ),
   active: z.boolean(),
-  status: z.enum(["ONLINE", "PAUSED", "SIGNAL_LOST", "OFFLINE"], {
-    message: AGENT_VALIDATION_MESSAGES.statusRequired,
-  }),
 });
 
 export const agentFiltersSchema = z.object({

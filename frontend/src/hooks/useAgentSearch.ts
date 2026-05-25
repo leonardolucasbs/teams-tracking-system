@@ -8,9 +8,12 @@ import type { Agent } from "@/features/agents/types/agent-types";
 import { normalizeAgent } from "@/features/agents/utils/agent-utils";
 import { filterAgentsByName } from "@/utils/agent-search-utils";
 
-export function useAgentSearch() {
+export function useAgentSearch(initialAgentId = "") {
   const [searchText, setSearchText] = useState("");
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+  const [selectedAgentOverride, setSelectedAgentOverride] =
+    useState<Agent | null>(null);
+  const [isInitialSelectionCleared, setIsInitialSelectionCleared] =
+    useState(false);
 
   const agentsQuery = useQuery({
     queryKey: AGENTS_QUERY_KEY,
@@ -23,14 +26,23 @@ export function useAgentSearch() {
     () => filterAgentsByName(agents, searchText),
     [agents, searchText],
   );
+  const initialAgent = useMemo(
+    () => agents.find((agent) => agent.id === initialAgentId) ?? null,
+    [agents, initialAgentId],
+  );
+  const selectedAgent =
+    selectedAgentOverride ??
+    (!isInitialSelectionCleared ? initialAgent : null);
 
   function selectAgent(agent: Agent) {
-    setSelectedAgent(agent);
+    setSelectedAgentOverride(agent);
+    setIsInitialSelectionCleared(false);
     setSearchText(agent.name);
   }
 
   function clearSelectedAgent() {
-    setSelectedAgent(null);
+    setSelectedAgentOverride(null);
+    setIsInitialSelectionCleared(true);
     setSearchText("");
   }
 
