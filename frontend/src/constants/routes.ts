@@ -16,5 +16,5 @@ export const navigationRoutes: NavigationRoute[] = [
   { href: "/routes", label: "Rotas", icon: Route },
   { href: "/check-ins", label: "Check-ins", icon: ClipboardCheck },
   { href: "/sync", label: "Monitoramento", icon: Radar },
-  { href: "/geofences", label: "Geofences", icon: Map },
+  { href: "/geofences", label: "Área Operacional", icon: Map },
 ];

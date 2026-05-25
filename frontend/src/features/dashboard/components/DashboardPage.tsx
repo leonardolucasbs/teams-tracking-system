@@ -16,7 +16,7 @@ export function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         title="Painel"
-        description="Visão operacional dos dados sincronizados pelo backend."
+        description="Visão operacional dos dados sincronizados."
       />
 
       {isLoading ? <LoadingState message="Carregando painel..." /> : null}
@@ -31,7 +31,7 @@ export function DashboardPage() {
       {data && isDashboardEmpty(data) ? (
         <EmptyState
           title="Nenhum dado encontrado"
-          message="Sincronize os dados no backend para visualizar o painel."
+          message="Sincronize os dados para visualizar o painel."
         />
       ) : null}
 

@@ -10,11 +10,12 @@ import { routeSearchSchema } from "@/features/routes/schemas/route-search-schema
 import { findTodayRouteByAgent } from "@/features/routes/services/routes-service";
 import type { RouteSearch } from "@/features/routes/types/route-types";
 import { normalizeRouteAgentId } from "@/features/routes/utils/route-utils";
+import { useAgentSearch } from "@/hooks/useAgentSearch";
 
 export function useRoute() {
   const [search, setSearch] = useState<RouteSearch>(defaultRouteSearch);
-  const [submittedAgentId, setSubmittedAgentId] = useState("");
-  const normalizedAgentId = normalizeRouteAgentId(submittedAgentId);
+  const agentSearch = useAgentSearch();
+  const normalizedAgentId = normalizeRouteAgentId(agentSearch.selectedAgent?.id ?? "");
 
   const routeQuery = useQuery({
     queryKey: [...ROUTE_QUERY_KEY, normalizedAgentId],
@@ -24,6 +25,7 @@ export function useRoute() {
 
   return {
     search,
+    agentSearch,
     route: routeQuery.data,
     hasAgentSearch: normalizedAgentId.length > 0,
     isLoading: routeQuery.isLoading,
@@ -36,7 +38,7 @@ export function useRoute() {
     const parsedSearch = routeSearchSchema.safeParse(search);
 
     if (parsedSearch.success) {
-      setSubmittedAgentId(parsedSearch.data.agentId);
+      setSearch(parsedSearch.data);
     }
   }
 }

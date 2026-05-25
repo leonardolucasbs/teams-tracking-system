@@ -1,6 +1,7 @@
 import type { UseFormRegister } from "react-hook-form";
 import type { z } from "zod";
 import type { checkInSchema } from "@/features/check-ins/schemas/check-in-schema";
+import type { AgentSearchState } from "@/types/agent-search-types";
 
 export type CheckInType =
   | "CHECKIN"
@@ -52,6 +53,7 @@ export type CheckInsTableProps = {
 
 export type CheckInFiltersProps = {
   filters: CheckInFilters;
+  agentSearch: AgentSearchState;
   onFiltersChange: (filters: CheckInFilters) => void;
   onSubmit: () => void;
 };
@@ -68,6 +70,7 @@ export type CheckInSyncButtonProps = {
 export type CheckInFormProps = {
   isOpen: boolean;
   isSubmitting: boolean;
+  agentSearch: AgentSearchState;
   onClose: () => void;
   onSubmit: (values: CheckInFormValues) => void;
 };

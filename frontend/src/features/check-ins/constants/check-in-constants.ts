@@ -29,8 +29,8 @@ export const checkInTypeLabels: Record<CheckInType, string> = {
   SIGNAL_LOST: "Sinal perdido",
   SIGNAL_RESTORED: "Sinal restaurado",
   LOW_BATTERY: "Bateria baixa",
-  GEOFENCE_ENTER: "Entrada em geofence",
-  GEOFENCE_EXIT: "Saída de geofence",
+  GEOFENCE_ENTER: "Entrada em área operacional",
+  GEOFENCE_EXIT: "Saída de área operacional",
 };
 
 export const checkInOriginLabels: Record<CheckInOrigin, string> = {
@@ -57,7 +57,7 @@ export const defaultCheckInFormValues: CheckInFormValues = {
 };
 
 export const CHECK_IN_VALIDATION_MESSAGES = {
-  agentIdRequired: "ID do agente é obrigatório.",
+  agentIdRequired: "Agente é obrigatório.",
   typeRequired: "Tipo é obrigatório.",
   latitudeRequired: "Latitude é obrigatória.",
   latitudeMin: "Latitude não pode ser menor que -90.",

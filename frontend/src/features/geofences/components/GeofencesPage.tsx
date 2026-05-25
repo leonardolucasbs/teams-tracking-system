@@ -24,8 +24,8 @@ export function GeofencesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Geofences"
-        description="Consulte as geofences sincronizadas e acompanhe suas regras de alerta."
+        title="Área Operacional"
+        description="Consulte as áreas operacionais e acompanhe suas regras de alerta."
         actions={
           <GeofenceSyncButton
             isSyncing={isSyncing}

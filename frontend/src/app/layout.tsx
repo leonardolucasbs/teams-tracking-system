@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Providers } from "@/app/providers";
 import type { ChildrenProps } from "@/types/component-props";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 
 export const metadata: Metadata = {
   title: "Sistema de Rastreamento de Equipes",

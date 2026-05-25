@@ -19,10 +19,9 @@ export function AgentsTable({
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[900px] border-collapse text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 font-medium">ID</th>
               <th className="px-4 py-3 font-medium">Nome</th>
               <th className="px-4 py-3 font-medium">Função</th>
               <th className="px-4 py-3 font-medium">Equipe</th>
@@ -38,7 +37,6 @@ export function AgentsTable({
           <tbody className="divide-y divide-border">
             {pagination.paginatedItems.map((agent) => (
               <tr key={agent.id} className="text-foreground">
-                <td className="px-4 py-3 font-mono text-xs">{agent.id}</td>
                 <td className="px-4 py-3 font-medium">{agent.name}</td>
                 <td className="px-4 py-3">
                   {agentRoleLabels[agent.normalizedRole]}

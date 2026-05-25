@@ -15,10 +15,14 @@ import { checkInFiltersSchema } from "@/features/check-ins/schemas/check-in-sche
 import type { CheckInFilters } from "@/features/check-ins/types/check-in-types";
 import { TOAST_MESSAGES } from "@/constants/toast-constants";
 import { useToast } from "@/hooks/useToast";
+import { useAgentSearch } from "@/hooks/useAgentSearch";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export function useCheckIns() {
   const queryClient = useQueryClient();
-  const { showSuccessToast } = useToast();
+  const { showSuccessToast, showErrorToast } = useToast();
+  const filterAgentSearch = useAgentSearch();
+  const formAgentSearch = useAgentSearch();
   const [filters, setFilters] =
     useState<CheckInFilters>(defaultCheckInFilters);
   const [submittedFilters, setSubmittedFilters] =
@@ -34,8 +38,11 @@ export function useCheckIns() {
     mutationFn: createCheckIn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CHECK_INS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.checkInCreated);
       closeForm();
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível cadastrar o check-in."));
     },
   });
 
@@ -43,13 +50,18 @@ export function useCheckIns() {
     mutationFn: syncCheckIns,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CHECK_INS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.checkInSynced);
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar os check-ins."));
     },
   });
 
   return {
     checkIns: checkInsQuery.data ?? [],
     filters,
+    filterAgentSearch,
+    formAgentSearch,
     isFormOpen,
     isLoading: checkInsQuery.isLoading,
     isError: checkInsQuery.isError || syncMutation.isError,
@@ -67,7 +79,10 @@ export function useCheckIns() {
     const parsedFilters = checkInFiltersSchema.safeParse(filters);
 
     if (parsedFilters.success) {
-      setSubmittedFilters(parsedFilters.data);
+      setSubmittedFilters({
+        ...parsedFilters.data,
+        agentId: filterAgentSearch.selectedAgent?.id ?? "",
+      });
     }
   }
 

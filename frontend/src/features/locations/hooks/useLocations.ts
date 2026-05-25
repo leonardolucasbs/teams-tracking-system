@@ -13,15 +13,19 @@ import {
 import { locationFiltersSchema } from "@/features/locations/schemas/location-filter-schema";
 import type { LocationFilters } from "@/features/locations/types/location-types";
 import { normalizeAgentId } from "@/features/locations/utils/location-utils";
+import { TOAST_MESSAGES } from "@/constants/toast-constants";
+import { useToast } from "@/hooks/useToast";
+import { useAgentSearch } from "@/hooks/useAgentSearch";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export function useLocations() {
   const queryClient = useQueryClient();
+  const { showSuccessToast, showErrorToast } = useToast();
+  const agentSearch = useAgentSearch();
   const [filters, setFilters] = useState<LocationFilters>(
     defaultLocationFilters,
   );
-  const [submittedAgentId, setSubmittedAgentId] = useState("");
-
-  const normalizedAgentId = normalizeAgentId(submittedAgentId);
+  const normalizedAgentId = normalizeAgentId(agentSearch.selectedAgent?.id ?? "");
   const locationsQuery = useQuery({
     queryKey: [...LOCATIONS_QUERY_KEY, normalizedAgentId],
     queryFn: () => findLocationsByAgent(normalizedAgentId),
@@ -32,12 +36,17 @@ export function useLocations() {
     mutationFn: syncLocations,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: LOCATIONS_QUERY_KEY });
+      showSuccessToast(TOAST_MESSAGES.locationsSynced);
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar as localizações."));
     },
   });
 
   return {
     locations: locationsQuery.data ?? [],
     filters,
+    agentSearch,
     hasAgentFilter: normalizedAgentId.length > 0,
     isLoading: locationsQuery.isLoading,
     isError: locationsQuery.isError || syncMutation.isError,
@@ -51,7 +60,7 @@ export function useLocations() {
     const parsedFilters = locationFiltersSchema.safeParse(filters);
 
     if (parsedFilters.success) {
-      setSubmittedAgentId(parsedFilters.data.agentId);
+      setFilters(parsedFilters.data);
     }
   }
 }

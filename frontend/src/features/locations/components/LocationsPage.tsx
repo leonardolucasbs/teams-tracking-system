@@ -13,13 +13,11 @@ import { useLocations } from "@/features/locations/hooks/useLocations";
 export function LocationsPage() {
   const {
     locations,
-    filters,
+    agentSearch,
     hasAgentFilter,
     isLoading,
     isError,
     isSyncing,
-    setFilters,
-    submitFilters,
     syncLocations,
   } = useLocations();
 
@@ -34,9 +32,7 @@ export function LocationsPage() {
       />
 
       <LocationFilters
-        filters={filters}
-        onFiltersChange={setFilters}
-        onSubmit={submitFilters}
+        agentSearch={agentSearch}
       />
 
       {isLoading ? <LoadingState message={LOCATION_MESSAGES.loading} /> : null}

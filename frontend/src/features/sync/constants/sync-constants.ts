@@ -25,7 +25,7 @@ export const syncTypeLabels: Record<SyncType, string> = {
   AGENTS: "Agentes",
   LOCATIONS: "Localizações",
   CHECK_INS: "Check-ins",
-  GEOFENCES: "Geofences",
+  GEOFENCES: "Área Operacional",
   ALL: "Todas",
 };
 
@@ -50,6 +50,5 @@ export const SYNC_MESSAGES = {
   error: "Não foi possível carregar o monitoramento.",
   emptyExecutions: "Nenhuma execução de sincronização encontrada.",
   emptySummary: "Nenhum resumo de sincronização encontrado.",
-  manualActions:
-    "Ações manuais disponíveis para fluxos que possuem endpoint interno.",
+  manualActions: "Sincronizações do sistema.",
 };

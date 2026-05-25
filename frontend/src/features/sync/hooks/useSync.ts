@@ -17,10 +17,11 @@ import {
 } from "@/features/sync/services/sync-service";
 import type { SyncFilters } from "@/features/sync/types/sync-types";
 import { useToast } from "@/hooks/useToast";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export function useSync() {
   const queryClient = useQueryClient();
-  const { showSuccessToast } = useToast();
+  const { showSuccessToast, showErrorToast } = useToast();
   const [filters, setFilters] = useState<SyncFilters>(defaultSyncFilters);
 
   const summaryQuery = useQuery({
@@ -35,23 +36,32 @@ export function useSync() {
 
   const locationsMutation = useMutation({
     mutationFn: syncLocations,
-    onSuccess: handleManualSyncSuccess,
+    onSuccess: () => handleManualSyncSuccess(TOAST_MESSAGES.locationsSynced),
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar as localizações."));
+    },
   });
 
   const checkInsMutation = useMutation({
     mutationFn: syncCheckIns,
-    onSuccess: handleManualSyncSuccess,
+    onSuccess: () => handleManualSyncSuccess(TOAST_MESSAGES.checkInSynced),
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar os check-ins."));
+    },
   });
 
   const geofencesMutation = useMutation({
     mutationFn: syncGeofences,
-    onSuccess: handleManualSyncSuccess,
+    onSuccess: () => handleManualSyncSuccess(TOAST_MESSAGES.geofencesSynced),
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar as áreas operacionais."));
+    },
   });
 
-  function handleManualSyncSuccess() {
+  function handleManualSyncSuccess(message: string) {
     queryClient.invalidateQueries({ queryKey: SYNC_SUMMARY_QUERY_KEY });
     queryClient.invalidateQueries({ queryKey: SYNC_EXECUTIONS_QUERY_KEY });
-    showSuccessToast(TOAST_MESSAGES.success);
+    showSuccessToast(message);
   }
 
   return {

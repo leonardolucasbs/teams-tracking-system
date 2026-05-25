@@ -1,3 +1,4 @@
+import { AgentSearch } from "@/components/shared/AgentSearch";
 import {
   checkInTypeLabels,
   checkInTypeOptions,
@@ -6,6 +7,7 @@ import type { CheckInFiltersProps } from "@/features/check-ins/types/check-in-ty
 
 export function CheckInFilters({
   filters,
+  agentSearch,
   onFiltersChange,
   onSubmit,
 }: CheckInFiltersProps) {
@@ -17,17 +19,17 @@ export function CheckInFilters({
         onSubmit();
       }}
     >
-      <label className="space-y-2 text-sm font-medium text-foreground">
-        <span>ID do agente</span>
-        <input
-          value={filters.agentId}
-          onChange={(event) =>
-            onFiltersChange({ ...filters, agentId: event.target.value })
-          }
-          placeholder="Exemplo: seed_agent_002"
-          className="h-10 w-full rounded-md border border-input bg-white px-3 text-sm"
+      <div className="md:col-span-2">
+        <AgentSearch
+          searchText={agentSearch.searchText}
+          selectedAgent={agentSearch.selectedAgent}
+          matchingAgents={agentSearch.matchingAgents}
+          isLoading={agentSearch.isLoading}
+          onSearchTextChange={agentSearch.setSearchText}
+          onSelectAgent={agentSearch.selectAgent}
+          onClear={agentSearch.clearSelectedAgent}
         />
-      </label>
+      </div>
 
       <label className="space-y-2 text-sm font-medium text-foreground">
         <span>Tipo</span>

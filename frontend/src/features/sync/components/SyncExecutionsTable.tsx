@@ -17,7 +17,7 @@ export function SyncExecutionsTable({ executions }: SyncExecutionsTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] text-left text-sm">
+        <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-border bg-zinc-50 text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Tipo</th>
@@ -26,8 +26,6 @@ export function SyncExecutionsTable({ executions }: SyncExecutionsTableProps) {
               <th className="px-4 py-3">Fim</th>
               <th className="px-4 py-3">Duração</th>
               <th className="px-4 py-3">Itens</th>
-              <th className="px-4 py-3">Token</th>
-              <th className="px-4 py-3">Erro</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -50,12 +48,6 @@ export function SyncExecutionsTable({ executions }: SyncExecutionsTableProps) {
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {formatSyncValue(execution.itemsProcessed)}
-                </td>
-                <td className="max-w-52 truncate px-4 py-3 text-muted-foreground">
-                  {formatSyncValue(execution.syncToken)}
-                </td>
-                <td className="max-w-72 truncate px-4 py-3 text-muted-foreground">
-                  {formatSyncValue(execution.errorMessage)}
                 </td>
               </tr>
             ))}

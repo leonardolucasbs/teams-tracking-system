@@ -17,13 +17,10 @@ export function LocationsTable({ locations }: LocationsTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1180px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 font-medium">ID</th>
               <th className="px-4 py-3 font-medium">Agente</th>
-              <th className="px-4 py-3 font-medium">ID externo</th>
-              <th className="px-4 py-3 font-medium">Nome</th>
               <th className="px-4 py-3 font-medium">Latitude</th>
               <th className="px-4 py-3 font-medium">Longitude</th>
               <th className="px-4 py-3 font-medium">Endereço</th>
@@ -38,13 +35,6 @@ export function LocationsTable({ locations }: LocationsTableProps) {
           <tbody className="divide-y divide-border">
             {pagination.paginatedItems.map((location) => (
               <tr key={location.id} className="text-foreground">
-                <td className="px-4 py-3 font-mono text-xs">{location.id}</td>
-                <td className="px-4 py-3 font-mono text-xs">
-                  {location.agentId}
-                </td>
-                <td className="px-4 py-3 font-mono text-xs">
-                  {location.externalId}
-                </td>
                 <td className="px-4 py-3 font-medium">
                   {location.agentName}
                 </td>
@@ -74,7 +64,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
                 </td>
                 <td className="px-4 py-3">
                   <Link
-                    href={`/routes?agentId=${location.agentId}`}
+                    href="/routes"
                     className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
                   >
                     Ver rota

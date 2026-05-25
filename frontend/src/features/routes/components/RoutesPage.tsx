@@ -12,26 +12,22 @@ import { useRoute } from "@/features/routes/hooks/useRoute";
 
 export function RoutesPage() {
   const {
-    search,
+    agentSearch,
     route,
     hasAgentSearch,
     isLoading,
     isError,
-    setSearch,
-    submitSearch,
   } = useRoute();
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Rotas"
-        description="Consulte a rota do dia calculada pelo backend."
+        description="Consulte a rota do dia calculada."
       />
 
       <RouteAgentSearch
-        search={search}
-        onSearchChange={setSearch}
-        onSubmit={submitSearch}
+        agentSearch={agentSearch}
       />
 
       {isLoading ? <LoadingState message={ROUTE_MESSAGES.loading} /> : null}

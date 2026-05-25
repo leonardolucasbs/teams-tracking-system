@@ -17,12 +17,12 @@ export const locationStatusLabels: Record<LocationStatus, string> = {
 };
 
 export const LOCATION_MESSAGES = {
-  emptyWithoutAgent: "Informe o ID de um agente para carregar o histórico.",
+  emptyWithoutAgent: "Busque e selecione um agente para carregar o histórico.",
   emptyWithAgent: "Nenhuma localização encontrada para o agente informado.",
   loading: "Carregando localizações...",
   error: "Não foi possível carregar as localizações.",
 };
 
 export const LOCATION_VALIDATION_MESSAGES = {
-  agentIdRequired: "ID do agente é obrigatório.",
+  agentIdRequired: "Agente é obrigatório.",
 };

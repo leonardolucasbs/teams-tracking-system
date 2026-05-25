@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AgentSearch } from "@/components/shared/AgentSearch";
 import { Button } from "@/components/ui/Button";
 import {
   checkInTypeLabels,
@@ -19,6 +20,7 @@ import { getCheckInRegisterOptions } from "@/features/check-ins/utils/check-in-u
 export function CheckInForm({
   isOpen,
   isSubmitting,
+  agentSearch,
   onClose,
   onSubmit,
 }: CheckInFormProps) {
@@ -26,6 +28,7 @@ export function CheckInForm({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CheckInFormValues>({
     resolver: zodResolver(checkInSchema),
@@ -53,16 +56,33 @@ export function CheckInForm({
           onSubmit={handleSubmit((values) => {
             onSubmit(values);
             reset(defaultCheckInFormValues);
+            agentSearch.clearSelectedAgent();
           })}
         >
           <div className="grid gap-4 md:grid-cols-2">
-            <CheckInTextField
-              id="agentId"
-              label="ID do agente"
-              placeholder="seed_agent_002"
-              register={register}
-              error={errors.agentId?.message}
-            />
+            <div className="md:col-span-2">
+              <AgentSearch
+                searchText={agentSearch.searchText}
+                selectedAgent={agentSearch.selectedAgent}
+                matchingAgents={agentSearch.matchingAgents}
+                isLoading={agentSearch.isLoading}
+                onSearchTextChange={agentSearch.setSearchText}
+                onSelectAgent={(agent) => {
+                  agentSearch.selectAgent(agent);
+                  setValue("agentId", agent.id, { shouldValidate: true });
+                }}
+                onClear={() => {
+                  agentSearch.clearSelectedAgent();
+                  setValue("agentId", "", { shouldValidate: true });
+                }}
+              />
+              {errors.agentId?.message ? (
+                <p className="mt-2 text-xs text-destructive">
+                  {errors.agentId.message}
+                </p>
+              ) : null}
+              <input type="hidden" {...register("agentId")} />
+            </div>
 
             <label className="space-y-2 text-sm font-medium text-foreground">
               <span>Tipo</span>

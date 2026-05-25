@@ -46,18 +46,8 @@ export const checkInSchema = z.object({
     ),
 });
 
-export const checkInFiltersSchema = z
-  .object({
-    agentId: z.string().trim(),
-    type: z.union([z.literal("ALL"), z.enum(checkInTypeValues)]),
-    todayOnly: z.boolean(),
-  })
-  .superRefine((filters, context) => {
-    if (filters.todayOnly && filters.agentId.length === 0) {
-      context.addIssue({
-        code: "custom",
-        path: ["agentId"],
-        message: CHECK_IN_VALIDATION_MESSAGES.agentIdRequired,
-      });
-    }
-  });
+export const checkInFiltersSchema = z.object({
+  agentId: z.string().trim(),
+  type: z.union([z.literal("ALL"), z.enum(checkInTypeValues)]),
+  todayOnly: z.boolean(),
+});

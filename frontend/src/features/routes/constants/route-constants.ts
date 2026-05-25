@@ -17,12 +17,12 @@ export const routeStatusLabels: Record<RouteStatus, string> = {
 };
 
 export const ROUTE_MESSAGES = {
-  emptyWithoutAgent: "Informe o ID de um agente para buscar a rota do dia.",
+  emptyWithoutAgent: "Busque e selecione um agente para buscar a rota do dia.",
   emptyWithAgent: "Nenhum ponto de rota encontrado para o agente informado.",
   loading: "Carregando rota do dia...",
   error: "Não foi possível carregar a rota do dia.",
 };
 
 export const ROUTE_VALIDATION_MESSAGES = {
-  agentIdRequired: "ID do agente é obrigatório.",
+  agentIdRequired: "Agente é obrigatório.",
 };

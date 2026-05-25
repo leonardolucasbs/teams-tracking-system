@@ -24,7 +24,7 @@ export function SyncActions({
             {isSyncingCheckIns ? "Sincronizando..." : "Sincronizar check-ins"}
           </Button>
           <Button onClick={onSyncGeofences} disabled={isSyncingGeofences}>
-            {isSyncingGeofences ? "Sincronizando..." : "Sincronizar geofences"}
+            {isSyncingGeofences ? "Sincronizando..." : "Sincronizar áreas operacionais"}
           </Button>
         </div>
       </div>

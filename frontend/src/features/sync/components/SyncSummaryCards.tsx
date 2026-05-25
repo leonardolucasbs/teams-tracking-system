@@ -45,19 +45,7 @@ export function SyncSummaryCards({ items }: SyncSummaryCardsProps) {
                 {formatSyncValue(item.lastItemsProcessed)}
               </dd>
             </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-muted-foreground">Token</dt>
-              <dd className="max-w-36 truncate text-right text-foreground">
-                {formatSyncValue(item.lastSyncToken)}
-              </dd>
-            </div>
           </dl>
-
-          {item.lastErrorMessage ? (
-            <p className="mt-3 line-clamp-2 text-xs text-red-700">
-              {item.lastErrorMessage}
-            </p>
-          ) : null}
         </article>
       ))}
     </section>

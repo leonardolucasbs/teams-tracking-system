@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { TablePagination } from "@/components/shared/TablePagination";
-import { CoordinatesJsonBlock } from "@/features/geofences/components/CoordinatesJsonBlock";
+import { Button } from "@/components/ui/Button";
 import { GeofenceTypeBadge } from "@/features/geofences/components/GeofenceTypeBadge";
 import type { GeofencesTableProps } from "@/features/geofences/types/geofence-types";
 import {
@@ -17,11 +18,9 @@ export function GeofencesTable({ geofences }: GeofencesTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[1180px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 font-medium">ID</th>
-              <th className="px-4 py-3 font-medium">ID externo</th>
               <th className="px-4 py-3 font-medium">Nome</th>
               <th className="px-4 py-3 font-medium">Tipo</th>
               <th className="px-4 py-3 font-medium">Entrada</th>
@@ -36,10 +35,6 @@ export function GeofencesTable({ geofences }: GeofencesTableProps) {
           <tbody className="divide-y divide-border">
             {pagination.paginatedItems.map((geofence) => (
               <tr key={geofence.id} className="text-foreground">
-                <td className="px-4 py-3 font-mono text-xs">{geofence.id}</td>
-                <td className="px-4 py-3 font-mono text-xs">
-                  {geofence.externalId}
-                </td>
                 <td className="px-4 py-3 font-medium">{geofence.name}</td>
                 <td className="px-4 py-3">
                   <GeofenceTypeBadge type={geofence.type} />
@@ -54,7 +49,11 @@ export function GeofencesTable({ geofences }: GeofencesTableProps) {
                   {formatOptionalText(geofence.assignedTeams)}
                 </td>
                 <td className="px-4 py-3">
-                  <CoordinatesJsonBlock value={geofence.coordinatesJson} />
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/geofences/${geofence.id}/map`}>
+                      Ver coordenadas
+                    </Link>
+                  </Button>
                 </td>
                 <td className="px-4 py-3">
                   {formatGeofenceDate(geofence.syncedAt)}

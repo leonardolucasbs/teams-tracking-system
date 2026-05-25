@@ -43,7 +43,7 @@ function buildOverviewItems(
       key: "total-agents",
       label: "Total de agentes",
       value: String(totalAgents),
-      description: "Agentes cadastrados no backend.",
+      description: "Agentes cadastrados.",
     },
     {
       key: "active-agents",
@@ -59,9 +59,9 @@ function buildOverviewItems(
     },
     {
       key: "total-geofences",
-      label: "Total de geofences",
+      label: "Total de áreas operacionais",
       value: String(data.geofences.length),
-      description: "Geofences sincronizadas.",
+      description: "Áreas operacionais sincronizadas.",
     },
     {
       key: "latest-sync-status",

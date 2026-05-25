@@ -19,7 +19,6 @@ export function RoutePointsTable({ points }: RoutePointsTableProps) {
         <table className="w-full min-w-[980px] border-collapse text-left text-sm">
           <thead className="border-b border-border bg-muted/40 text-muted-foreground">
             <tr>
-              <th className="px-4 py-3 font-medium">Localização</th>
               <th className="px-4 py-3 font-medium">Latitude</th>
               <th className="px-4 py-3 font-medium">Longitude</th>
               <th className="px-4 py-3 font-medium">Endereço</th>
@@ -33,9 +32,6 @@ export function RoutePointsTable({ points }: RoutePointsTableProps) {
           <tbody className="divide-y divide-border">
             {pagination.paginatedItems.map((point) => (
               <tr key={point.locationId} className="text-foreground">
-                <td className="px-4 py-3 font-mono text-xs">
-                  {point.locationId}
-                </td>
                 <td className="px-4 py-3">
                   {formatCoordinate(point.latitude)}
                 </td>

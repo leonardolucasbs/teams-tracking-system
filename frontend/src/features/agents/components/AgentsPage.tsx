@@ -33,7 +33,7 @@ export function AgentsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Agentes"
-        description="Gerencie agentes locais e agentes sincronizados pelo backend."
+        description="Gerencie agentes locais e agentes sincronizados."
         actions={<Button onClick={openCreateForm}>Criar agente</Button>}
       />
 

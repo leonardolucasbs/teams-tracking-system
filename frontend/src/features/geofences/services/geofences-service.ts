@@ -18,6 +18,19 @@ export async function findGeofences(filters: GeofenceFilters) {
   }
 }
 
+export async function findGeofenceById(id: string) {
+  try {
+    const response = await httpClient.get<Geofence>(`/api/geofences/${id}`);
+    return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
 export async function syncGeofences() {
   await httpClient.post("/api/geofences/sync");
 }

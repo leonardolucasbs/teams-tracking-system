@@ -32,9 +32,7 @@ export type RouteSearch = {
 };
 
 export type RouteAgentSearchProps = {
-  search: RouteSearch;
-  onSearchChange: (search: RouteSearch) => void;
-  onSubmit: () => void;
+  agentSearch: AgentSearchState;
 };
 
 export type RouteSummaryCardsProps = {
@@ -48,3 +46,4 @@ export type RoutePointsTableProps = {
 export type RouteStatusBadgeProps = {
   status: RouteStatus;
 };
+import type { AgentSearchState } from "@/types/agent-search-types";

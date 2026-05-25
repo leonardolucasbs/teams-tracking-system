@@ -45,7 +45,7 @@ export const quickNavigationItems: QuickNavigationItem[] = [
   },
   {
     href: "/geofences",
-    title: "Geofences",
+    title: "Área Operacional",
     description: "Consulte áreas sincronizadas.",
     icon: Map,
   },
@@ -62,6 +62,6 @@ export const syncTypeLabels: Record<SyncType, string> = {
   AGENTS: "Agentes",
   LOCATIONS: "Localizações",
   CHECK_INS: "Check-ins",
-  GEOFENCES: "Geofences",
+  GEOFENCES: "Área Operacional",
   ALL: "Todos",
 };

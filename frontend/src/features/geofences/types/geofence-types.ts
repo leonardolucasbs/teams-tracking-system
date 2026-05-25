@@ -1,3 +1,5 @@
+import type { LatLngBoundsExpression, LatLngExpression } from "leaflet";
+
 export type GeofenceType = "POLYGON" | "CIRCLE";
 
 export type GeofenceTypeFilter = GeofenceType | "ALL";
@@ -33,11 +35,32 @@ export type GeofenceTypeBadgeProps = {
   type: GeofenceType;
 };
 
-export type CoordinatesJsonBlockProps = {
-  value: string;
-};
-
 export type GeofenceSyncButtonProps = {
   isSyncing: boolean;
   onSync: () => void;
+};
+
+export type GeofenceMapPageProps = {
+  id: string;
+};
+
+export type GeofenceMapDetailsProps = {
+  geofence: Geofence;
+};
+
+export type GeofenceMapWrapperProps = {
+  geofence: Geofence;
+};
+
+export type GeofenceMapClientProps = {
+  geofence: Geofence;
+};
+
+export type ParsedGeofenceCoordinates = {
+  type: "POLYGON" | "CIRCLE" | "POINT" | "INVALID";
+  center: LatLngExpression | null;
+  bounds: LatLngBoundsExpression | null;
+  polygon: LatLngExpression[] | null;
+  radius: number | null;
+  message: string | null;
 };

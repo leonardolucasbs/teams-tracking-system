@@ -16,6 +16,8 @@ export function CheckInsPage() {
   const {
     checkIns,
     filters,
+    filterAgentSearch,
+    formAgentSearch,
     isFormOpen,
     isLoading,
     isError,
@@ -44,6 +46,7 @@ export function CheckInsPage() {
 
       <CheckInFilters
         filters={filters}
+        agentSearch={filterAgentSearch}
         onFiltersChange={setFilters}
         onSubmit={submitFilters}
       />
@@ -69,6 +72,7 @@ export function CheckInsPage() {
       <CheckInForm
         isOpen={isFormOpen}
         isSubmitting={isSubmitting}
+        agentSearch={formAgentSearch}
         onClose={closeForm}
         onSubmit={createCheckIn}
       />

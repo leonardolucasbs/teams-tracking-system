@@ -12,15 +12,17 @@ import {
   defaultGeofenceFilters,
 } from "@/features/geofences/constants/geofence-constants";
 import {
+  findGeofenceById,
   findGeofences,
   syncGeofences,
 } from "@/features/geofences/services/geofences-service";
 import type { GeofenceFilters } from "@/features/geofences/types/geofence-types";
 import { useToast } from "@/hooks/useToast";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export function useGeofences() {
   const queryClient = useQueryClient();
-  const { showSuccessToast } = useToast();
+  const { showSuccessToast, showErrorToast } = useToast();
   const [filters, setFilters] =
     useState<GeofenceFilters>(defaultGeofenceFilters);
 
@@ -35,7 +37,10 @@ export function useGeofences() {
       queryClient.invalidateQueries({ queryKey: GEOFENCES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: SYNC_SUMMARY_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: SYNC_EXECUTIONS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.geofencesSynced);
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível sincronizar as áreas operacionais."));
     },
   });
 
@@ -47,5 +52,19 @@ export function useGeofences() {
     isSyncing: syncMutation.isPending,
     setFilters,
     syncGeofences: syncMutation.mutate,
+  };
+}
+
+export function useGeofenceMap(id: string) {
+  const geofenceQuery = useQuery({
+    queryKey: [...GEOFENCES_QUERY_KEY, id],
+    queryFn: () => findGeofenceById(id),
+    enabled: id.length > 0,
+  });
+
+  return {
+    geofence: geofenceQuery.data,
+    isLoading: geofenceQuery.isLoading,
+    isError: geofenceQuery.isError,
   };
 }

@@ -13,9 +13,6 @@ export function RouteSummaryCards({ summary }: RouteSummaryCardsProps) {
         <strong className="mt-3 block text-lg font-semibold text-foreground">
           {summary.agentName}
         </strong>
-        <p className="mt-2 font-mono text-xs text-muted-foreground">
-          {summary.agentId}
-        </p>
       </article>
 
       <article className="rounded-lg border border-border bg-white p-5">

@@ -26,10 +26,11 @@ import {
 } from "@/features/agents/utils/agent-utils";
 import { TOAST_MESSAGES } from "@/constants/toast-constants";
 import { useToast } from "@/hooks/useToast";
+import { getApiErrorMessage } from "@/utils/api-error";
 
 export function useAgents() {
   const queryClient = useQueryClient();
-  const { showSuccessToast } = useToast();
+  const { showSuccessToast, showErrorToast } = useToast();
   const [filters, setFilters] = useState<AgentFilters>(defaultAgentFilters);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -44,8 +45,11 @@ export function useAgents() {
     mutationFn: createAgent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.agentCreated);
       closeForm();
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível cadastrar o agente."));
     },
   });
 
@@ -59,8 +63,11 @@ export function useAgents() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.agentUpdated);
       closeForm();
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível atualizar o agente."));
     },
   });
 
@@ -68,7 +75,10 @@ export function useAgents() {
     mutationFn: deactivateAgent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: AGENTS_QUERY_KEY });
-      showSuccessToast(TOAST_MESSAGES.success);
+      showSuccessToast(TOAST_MESSAGES.agentDeactivated);
+    },
+    onError: (error) => {
+      showErrorToast(getApiErrorMessage(error, "Não foi possível desativar o agente."));
     },
   });
 

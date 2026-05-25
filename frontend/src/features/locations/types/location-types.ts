@@ -30,9 +30,7 @@ export type LocationsTableProps = {
 };
 
 export type LocationFiltersProps = {
-  filters: LocationFilters;
-  onFiltersChange: (filters: LocationFilters) => void;
-  onSubmit: () => void;
+  agentSearch: AgentSearchState;
 };
 
 export type LocationSyncButtonProps = {
@@ -43,3 +41,4 @@ export type LocationSyncButtonProps = {
 export type LocationStatusBadgeProps = {
   status: LocationStatus;
 };
+import type { AgentSearchState } from "@/types/agent-search-types";
