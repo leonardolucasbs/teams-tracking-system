@@ -13,13 +13,13 @@ COPY settings.gradle .
 COPY src src
 
 # Build the application
-RUN ./gradlew clean build -x test
+RUN chmod +x gradlew && ./gradlew clean build -x test
 
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 
-# Install mysql-client for healthchecks (optional but useful)
-RUN apk add --no-cache mysql-client
+# Install curl for healthchecks
+RUN apk add --no-cache curl
 
 WORKDIR /app
 
@@ -31,8 +31,7 @@ EXPOSE 8080
 
 # Healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD java -cp app.jar org.springframework.boot.loader.PropertiesLauncher \
-      -Dspring.profiles.active=health || exit 1
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Run the JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
