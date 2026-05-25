@@ -93,7 +93,7 @@ export function AgentForm({
             <AgentTextField
               id="phone"
               label="Telefone"
-              placeholder="(11) 99999-9999"
+              placeholder="(11)99999-9999"
               register={register}
               error={errors.phone?.message}
             />

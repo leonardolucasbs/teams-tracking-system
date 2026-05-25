@@ -66,6 +66,7 @@ export const CHECK_IN_VALIDATION_MESSAGES = {
   longitudeMin: "Longitude não pode ser menor que -180.",
   longitudeMax: "Longitude não pode ser maior que 180.",
   occurredAtInvalid: "Informe a data e hora no formato dd/mm/aaaa hh:mm.",
+  occurredAtFuture: "A data e hora do check-in não podem ser futuras.",
 };
 
 export const CHECK_IN_MESSAGES = {

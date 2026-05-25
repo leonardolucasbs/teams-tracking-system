@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { CHECK_IN_VALIDATION_MESSAGES } from "@/features/check-ins/constants/check-in-constants";
+import {
+  isBrazilianDateTime,
+  isBrazilianDateTimeNotInFuture,
+} from "@/features/check-ins/utils/check-in-utils";
 
 const checkInTypeValues = [
   "CHECKIN",
@@ -39,10 +43,12 @@ export const checkInSchema = z.object({
     .refine(
       (value) =>
         value.length === 0 ||
-        /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4} ([01]\d|2[0-3]):[0-5]\d$/.test(
-          value,
-        ),
+        isBrazilianDateTime(value),
       CHECK_IN_VALIDATION_MESSAGES.occurredAtInvalid,
+    )
+    .refine(
+      (value) => value.length === 0 || isBrazilianDateTimeNotInFuture(value),
+      CHECK_IN_VALIDATION_MESSAGES.occurredAtFuture,
     ),
 });
 

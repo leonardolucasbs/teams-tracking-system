@@ -65,6 +65,7 @@ export const AGENT_VALIDATION_MESSAGES = {
   roleRequired: "Função é obrigatória.",
   teamRequired: "Equipe é obrigatória.",
   phoneRequired: "Telefone é obrigatório.",
+  phoneLength: "Telefone deve ter exatamente 14 caracteres.",
   emailInvalid: "Informe um e-mail válido.",
 };
 

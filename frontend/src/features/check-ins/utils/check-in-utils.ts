@@ -8,15 +8,65 @@ const optionalNumberFields: Array<keyof CheckInFormValues> = [
   "speed",
 ];
 
+const brazilianDateTimeRegex =
+  /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/\d{4} ([01]\d|2[0-3]):[0-5]\d$/;
+
 export function formatCheckInDate(value: string | null | undefined) {
   return formatBrazilianDateTime(value);
 }
 
-export function parseBrazilianDateTimeToIso(value: string) {
-  const [date, time] = value.trim().split(" ");
-  const [day, month, year] = date.split("/");
+export function isBrazilianDateTime(value: string) {
+  return brazilianDateTimeRegex.test(value.trim()) && parseBrazilianDateTime(value) !== null;
+}
 
-  return new Date(`${year}-${month}-${day}T${time}:00`).toISOString();
+export function isBrazilianDateTimeNotInFuture(value: string) {
+  const parsedDate = parseBrazilianDateTime(value);
+
+  if (!parsedDate) {
+    return true;
+  }
+
+  return parsedDate.getTime() <= Date.now();
+}
+
+export function parseBrazilianDateTimeToIso(value: string) {
+  const parsedDate = parseBrazilianDateTime(value);
+
+  if (!parsedDate) {
+    return null;
+  }
+
+  return parsedDate.toISOString();
+}
+
+function parseBrazilianDateTime(value: string) {
+  const [date, time] = value.trim().split(" ");
+
+  if (!date || !time || !brazilianDateTimeRegex.test(value.trim())) {
+    return null;
+  }
+
+  const [day, month, year] = date.split("/");
+  const [hour, minute] = time.split(":");
+  const parsedDate = new Date(
+    Number(year),
+    Number(month) - 1,
+    Number(day),
+    Number(hour),
+    Number(minute),
+  );
+
+  if (
+    parsedDate.getFullYear() !== Number(year) ||
+    parsedDate.getMonth() !== Number(month) - 1 ||
+    parsedDate.getDate() !== Number(day) ||
+    parsedDate.getHours() !== Number(hour) ||
+    parsedDate.getMinutes() !== Number(minute)
+  ) {
+    return null;
+  }
+
+  return parsedDate;
 }
 
 export function formatCoordinate(value: number | null | undefined) {

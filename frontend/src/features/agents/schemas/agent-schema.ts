@@ -7,7 +7,11 @@ export const agentSchema = z.object({
     message: AGENT_VALIDATION_MESSAGES.roleRequired,
   }),
   team: z.string().trim().min(1, AGENT_VALIDATION_MESSAGES.teamRequired),
-  phone: z.string().trim().min(1, AGENT_VALIDATION_MESSAGES.phoneRequired),
+  phone: z
+    .string()
+    .trim()
+    .min(1, AGENT_VALIDATION_MESSAGES.phoneRequired)
+    .length(14, AGENT_VALIDATION_MESSAGES.phoneLength),
   email: z
     .string()
     .trim()
