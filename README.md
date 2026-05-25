@@ -66,11 +66,15 @@ teams-tracking-system/
 
 O projeto usa variáveis de ambiente. como a chave da API externa, não devem ser versionados.
 
-Crie o arquivo `.env` a partir do exemplo:
+Para executar com Docker, o arquivo `.env` deve ficar na raiz do projeto, no mesmo nível do `docker-compose.yml`.
+
+Crie o arquivo `.env` a partir do exemplo da raiz:
 
 ```bash
 cp .env.example .env
 ```
+
+Não é necessário criar `.env` dentro de `backend/` ou `frontend/` para o fluxo com Docker Compose. O `docker-compose.yml` lê o `.env` da raiz e repassa as variáveis para cada serviço.
 
 Principais variáveis:
 
