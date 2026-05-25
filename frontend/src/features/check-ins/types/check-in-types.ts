@@ -1,6 +1,6 @@
 import type { UseFormRegister } from "react-hook-form";
 import type { z } from "zod";
-import type { checkInSchema } from "@/features/check-ins/schemas/checkInSchema";
+import type { checkInSchema } from "@/features/check-ins/schemas/check-in-schema";
 
 export type CheckInType =
   | "CHECKIN"

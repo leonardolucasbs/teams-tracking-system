@@ -11,7 +11,7 @@ import {
   findCheckIns,
   syncCheckIns,
 } from "@/features/check-ins/services/check-ins-service";
-import { checkInFiltersSchema } from "@/features/check-ins/schemas/checkInSchema";
+import { checkInFiltersSchema } from "@/features/check-ins/schemas/check-in-schema";
 import type { CheckInFilters } from "@/features/check-ins/types/check-in-types";
 import { TOAST_MESSAGES } from "@/constants/toast-constants";
 import { useToast } from "@/hooks/useToast";

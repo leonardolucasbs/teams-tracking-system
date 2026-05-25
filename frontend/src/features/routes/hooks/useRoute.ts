@@ -6,7 +6,7 @@ import {
   ROUTE_QUERY_KEY,
   defaultRouteSearch,
 } from "@/features/routes/constants/route-constants";
-import { routeSearchSchema } from "@/features/routes/schemas/routeSearchSchema";
+import { routeSearchSchema } from "@/features/routes/schemas/route-search-schema";
 import { findTodayRouteByAgent } from "@/features/routes/services/routes-service";
 import type { RouteSearch } from "@/features/routes/types/route-types";
 import { normalizeRouteAgentId } from "@/features/routes/utils/route-utils";

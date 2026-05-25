@@ -11,12 +11,17 @@ import leonardolucasbs.backend.external.dto.ExternalSyncResponseDTO;
 import leonardolucasbs.backend.geofence.dto.ExternalGeofencesResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 
 @Component
@@ -41,10 +46,7 @@ public class MediaApiClient {
                 })
                 .retrieve())
                 .bodyToMono(ExternalAgentsResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     private boolean isRetryable(Throwable error) {
@@ -73,10 +75,7 @@ public class MediaApiClient {
                 })
                 .retrieve())
                 .bodyToMono(ExternalAgentLocationsResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     public Mono<ExternalCheckInsResponseDTO> findCheckIns(String agentId, CheckInType type) {
@@ -96,10 +95,7 @@ public class MediaApiClient {
                 })
                 .retrieve())
                 .bodyToMono(ExternalCheckInsResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     public Mono<ExternalSyncResponseDTO> triggerAgentsSync() {
@@ -123,10 +119,7 @@ public class MediaApiClient {
                 })
                 .retrieve())
                 .bodyToMono(ExternalCheckInSyncResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     public Mono<ExternalSyncResponseDTO> triggerGeofencesSync() {
@@ -138,10 +131,7 @@ public class MediaApiClient {
                 .uri("/api/v1/geofences/")
                 .retrieve())
                 .bodyToMono(ExternalGeofencesResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     public Mono<ExternalFullSyncResponseDTO> triggerFullSync() {
@@ -149,10 +139,7 @@ public class MediaApiClient {
                 .uri("/api/v1/sync/all")
                 .retrieve())
                 .bodyToMono(ExternalFullSyncResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     private Mono<ExternalSyncResponseDTO> triggerSimpleSync(String path) {
@@ -160,19 +147,18 @@ public class MediaApiClient {
                 .uri(path)
                 .retrieve())
                 .bodyToMono(ExternalSyncResponseDTO.class)
-                .retryWhen(
-                        Retry.backoff(3, Duration.ofSeconds(2))
-                                .filter(this::isRetryable)
-                );
+                .retryWhen(externalApiRetry());
     }
 
     private ResponseSpec withExternalApiErrorHandling(ResponseSpec responseSpec) {
         return responseSpec
                 .onStatus(
                         status -> status.value() == 429,
-                        response -> Mono.error(
-                                new ExternalApiException("External API rate limit exceeded", 429)
-                        )
+                        response -> Mono.error(new ExternalApiException(
+                                "External API rate limit exceeded",
+                                429,
+                                parseRetryAfter(response.headers().asHttpHeaders().getFirst(HttpHeaders.RETRY_AFTER))
+                        ))
                 )
                 .onStatus(
                         status -> status.value() == 503,
@@ -192,5 +178,56 @@ public class MediaApiClient {
                                 new ExternalApiException("Server error while consuming external API", response.statusCode().value())
                         )
                 );
+    }
+
+    private Retry externalApiRetry() {
+        return Retry.from(retrySignals -> retrySignals.concatMap(retrySignal -> {
+            Throwable failure = retrySignal.failure();
+
+            if (!isRetryable(failure) || retrySignal.totalRetries() >= 3) {
+                return Mono.error(Exceptions.retryExhausted("Retries exhausted: 3/3", failure));
+            }
+
+            return Mono.delay(getRetryDelay(failure, retrySignal.totalRetries()));
+        }));
+    }
+
+    private Duration getRetryDelay(Throwable failure, long retryAttempt) {
+        if (failure instanceof ExternalApiException exception
+                && exception.getStatusCode() == 429
+                && exception.getRetryAfter() != null
+                && !exception.getRetryAfter().isNegative()
+                && !exception.getRetryAfter().isZero()) {
+            return exception.getRetryAfter();
+        }
+
+        return Duration.ofSeconds(2L * (long) Math.pow(2, retryAttempt));
+    }
+
+    private Duration parseRetryAfter(String retryAfterHeader) {
+        if (retryAfterHeader == null || retryAfterHeader.isBlank()) {
+            return null;
+        }
+
+        try {
+            long seconds = Long.parseLong(retryAfterHeader.trim());
+            return Duration.ofSeconds(seconds);
+        } catch (NumberFormatException ignored) {
+            return parseRetryAfterDate(retryAfterHeader);
+        }
+    }
+
+    private Duration parseRetryAfterDate(String retryAfterHeader) {
+        try {
+            ZonedDateTime retryAt = ZonedDateTime.parse(
+                    retryAfterHeader.trim(),
+                    DateTimeFormatter.RFC_1123_DATE_TIME
+            );
+
+            Duration delay = Duration.between(ZonedDateTime.now(retryAt.getZone()), retryAt);
+            return delay.isNegative() ? Duration.ZERO : delay;
+        } catch (DateTimeParseException ignored) {
+            return null;
+        }
     }
 }

@@ -15,23 +15,23 @@ export function DashboardPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Dashboard"
+        title="Painel"
         description="Visão operacional dos dados sincronizados pelo backend."
       />
 
-      {isLoading ? <LoadingState message="Carregando dashboard..." /> : null}
+      {isLoading ? <LoadingState message="Carregando painel..." /> : null}
 
       {isError ? (
         <ErrorState
           title="Ocorreu um erro"
-          message="Não foi possível carregar os dados do dashboard."
+          message="Não foi possível carregar os dados do painel."
         />
       ) : null}
 
       {data && isDashboardEmpty(data) ? (
         <EmptyState
           title="Nenhum dado encontrado"
-          message="Sincronize os dados no backend para visualizar o dashboard."
+          message="Sincronize os dados no backend para visualizar o painel."
         />
       ) : null}
 

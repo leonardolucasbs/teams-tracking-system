@@ -10,7 +10,7 @@ import {
   findLocationsByAgent,
   syncLocations,
 } from "@/features/locations/services/locations-service";
-import { locationFiltersSchema } from "@/features/locations/schemas/locationFilterSchema";
+import { locationFiltersSchema } from "@/features/locations/schemas/location-filter-schema";
 import type { LocationFilters } from "@/features/locations/types/location-types";
 import { normalizeAgentId } from "@/features/locations/utils/location-utils";
 

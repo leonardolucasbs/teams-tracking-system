@@ -13,7 +13,7 @@ import {
   findAgents,
   updateAgent,
 } from "@/features/agents/services/agents-service";
-import { agentFiltersSchema } from "@/features/agents/schemas/agentSchema";
+import { agentFiltersSchema } from "@/features/agents/schemas/agent-schema";
 import type {
   Agent,
   AgentFilters,

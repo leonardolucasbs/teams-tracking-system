@@ -1,5 +1,6 @@
 package leonardolucasbs.backend.geofence.service;
 
+import leonardolucasbs.backend.common.exception.BusinessException;
 import leonardolucasbs.backend.external.MediaApiClient;
 import leonardolucasbs.backend.geofence.dto.ExternalGeofenceResponseDTO;
 import leonardolucasbs.backend.geofence.dto.ExternalGeofencesResponseDTO;
@@ -60,24 +61,44 @@ public class GeofenceSyncService {
     }
 
     private boolean saveOrUpdateGeofence(ExternalGeofenceResponseDTO dto) {
+        if (dto.id() == null || dto.id().isBlank()) {
+            log.warn("Ignoring external geofence without id.");
+            return false;
+        }
+
         if (dto.externalId() == null || dto.externalId().isBlank()) {
             log.warn("Ignoring external geofence without externalId.");
             return false;
         }
 
         return geofenceRepository.findByExternalId(dto.externalId())
-                .map(existingGeofence -> updateExistingGeofence(existingGeofence, dto))
-                .orElseGet(() -> createGeofence(dto));
+                .map(existingGeofence -> updateExistingGeofenceOrDetectConflict(existingGeofence, dto))
+                .orElseGet(() -> createGeofenceOrDetectConflict(dto));
     }
 
-    private boolean updateExistingGeofence(Geofence geofence, ExternalGeofenceResponseDTO dto) {
+    private boolean updateExistingGeofenceOrDetectConflict(Geofence geofence, ExternalGeofenceResponseDTO dto) {
+        if (!geofence.getId().equals(dto.id())) {
+            throw new BusinessException(
+                    "External geofence conflict detected. externalId already exists with another id: "
+                            + dto.externalId()
+            );
+        }
+
         geofenceMapper.updateFromExternalResponse(geofence, dto);
         geofenceRepository.save(geofence);
 
         return true;
     }
 
-    private boolean createGeofence(ExternalGeofenceResponseDTO dto) {
+    private boolean createGeofenceOrDetectConflict(ExternalGeofenceResponseDTO dto) {
+        geofenceRepository.findById(dto.id())
+                .ifPresent(conflictingGeofence -> {
+                    throw new BusinessException(
+                            "External geofence conflict detected. id already exists with another externalId: "
+                                    + dto.id()
+                    );
+                });
+
         Geofence geofence = geofenceMapper.fromExternalResponse(dto);
         geofenceRepository.save(geofence);
 
