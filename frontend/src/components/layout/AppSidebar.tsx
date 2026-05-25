@@ -13,7 +13,11 @@ export function AppSidebar() {
         <NavLink
           key={route.href}
           {...route}
-          isActive={pathname.startsWith(route.href)}
+          isActive={
+            route.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(route.href)
+          }
         />
       ))}
     </nav>

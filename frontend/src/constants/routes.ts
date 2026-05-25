@@ -10,7 +10,7 @@ import {
 import type { NavigationRoute } from "@/types/navigation";
 
 export const navigationRoutes: NavigationRoute[] = [
-  { href: "/dashboard", label: "Painel", icon: Home },
+  { href: "/", label: "Painel", icon: Home },
   { href: "/agents", label: "Agentes", icon: Activity },
   { href: "/locations", label: "Localizações", icon: MapPinned },
   { href: "/routes", label: "Rotas", icon: Route },
