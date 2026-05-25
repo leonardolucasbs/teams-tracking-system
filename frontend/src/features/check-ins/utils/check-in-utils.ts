@@ -1,4 +1,5 @@
 import type { RegisterOptions } from "react-hook-form";
+import { formatBrazilianDateTime } from "@/utils/format-date";
 import type { CheckInFormValues } from "@/features/check-ins/types/check-in-types";
 import type { CheckInType } from "@/features/check-ins/types/check-in-types";
 
@@ -8,14 +9,7 @@ const optionalNumberFields: Array<keyof CheckInFormValues> = [
 ];
 
 export function formatCheckInDate(value: string | null | undefined) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatBrazilianDateTime(value);
 }
 
 export function parseBrazilianDateTimeToIso(value: string) {

@@ -2,6 +2,7 @@ import type {
   LocationFilters,
   LocationStatus,
 } from "@/features/locations/types/location-types";
+import { formatBrazilianDateTime } from "@/utils/format-date";
 
 export function canFetchLocations(filters: LocationFilters) {
   return filters.agentId.trim().length > 0;
@@ -12,14 +13,7 @@ export function normalizeAgentId(agentId: string) {
 }
 
 export function formatLocationDate(value: string | null | undefined) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatBrazilianDateTime(value);
 }
 
 export function formatCoordinate(value: number) {

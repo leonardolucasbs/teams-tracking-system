@@ -7,6 +7,8 @@ import type {
 
 export const AGENTS_QUERY_KEY = ["agents"];
 
+export const AGENT_DEFAULT_BATTERY = 100;
+
 export const agentRoleOptions: AgentRole[] = [
   "INSTALLER",
   "TECHNICIAN",
@@ -55,7 +57,6 @@ export const defaultAgentFormValues: AgentFormValues = {
   email: "",
   active: true,
   status: "ONLINE",
-  battery: 100,
 };
 
 export const AGENT_VALIDATION_MESSAGES = {
@@ -65,9 +66,6 @@ export const AGENT_VALIDATION_MESSAGES = {
   phoneRequired: "Telefone é obrigatório.",
   emailInvalid: "Informe um e-mail válido.",
   statusRequired: "Status é obrigatório.",
-  batteryRequired: "Bateria é obrigatória.",
-  batteryMin: "A bateria não pode ser menor que 0.",
-  batteryMax: "A bateria não pode ser maior que 100.",
 };
 
 export const AGENT_CONFIRM_MESSAGES = {

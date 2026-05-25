@@ -1,8 +1,12 @@
+ "use client";
+
+import { TablePagination } from "@/components/shared/TablePagination";
 import { AgentActions } from "@/features/agents/components/AgentActions";
 import { AgentStatusBadge } from "@/features/agents/components/AgentStatusBadge";
 import { agentRoleLabels } from "@/features/agents/constants/agent-constants";
 import type { AgentsTableProps } from "@/features/agents/types/agent-types";
 import { formatAgentDate } from "@/features/agents/utils/agent-utils";
+import { usePagination } from "@/hooks/usePagination";
 
 export function AgentsTable({
   agents,
@@ -10,6 +14,8 @@ export function AgentsTable({
   onDeactivate,
   isDeactivating,
 }: AgentsTableProps) {
+  const pagination = usePagination(agents);
+
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
@@ -30,7 +36,7 @@ export function AgentsTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {agents.map((agent) => (
+            {pagination.paginatedItems.map((agent) => (
               <tr key={agent.id} className="text-foreground">
                 <td className="px-4 py-3 font-mono text-xs">{agent.id}</td>
                 <td className="px-4 py-3 font-medium">{agent.name}</td>
@@ -61,6 +67,15 @@ export function AgentsTable({
           </tbody>
         </table>
       </div>
+      <TablePagination
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        pageSize={pagination.pageSize}
+        startItem={pagination.startItem}
+        endItem={pagination.endItem}
+        onPageChange={pagination.setPage}
+      />
     </div>
   );
 }

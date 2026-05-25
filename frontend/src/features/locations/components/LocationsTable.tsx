@@ -1,4 +1,7 @@
+ "use client";
+
 import Link from "next/link";
+import { TablePagination } from "@/components/shared/TablePagination";
 import { LocationStatusBadge } from "@/features/locations/components/LocationStatusBadge";
 import type { LocationsTableProps } from "@/features/locations/types/location-types";
 import {
@@ -6,8 +9,11 @@ import {
   formatLocationDate,
   formatOptionalNumber,
 } from "@/features/locations/utils/location-utils";
+import { usePagination } from "@/hooks/usePagination";
 
 export function LocationsTable({ locations }: LocationsTableProps) {
+  const pagination = usePagination(locations);
+
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
@@ -30,7 +36,7 @@ export function LocationsTable({ locations }: LocationsTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {locations.map((location) => (
+            {pagination.paginatedItems.map((location) => (
               <tr key={location.id} className="text-foreground">
                 <td className="px-4 py-3 font-mono text-xs">{location.id}</td>
                 <td className="px-4 py-3 font-mono text-xs">
@@ -79,6 +85,15 @@ export function LocationsTable({ locations }: LocationsTableProps) {
           </tbody>
         </table>
       </div>
+      <TablePagination
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        pageSize={pagination.pageSize}
+        startItem={pagination.startItem}
+        endItem={pagination.endItem}
+        onPageChange={pagination.setPage}
+      />
     </div>
   );
 }

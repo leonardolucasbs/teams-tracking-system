@@ -78,7 +78,6 @@ public final class AgentMapper {
         agent.setEmail(dto.email());
         agent.setActive(dto.active() != null ? dto.active() : agent.getActive());
         agent.setStatus(dto.status());
-        agent.setBattery(dto.battery());
     }
 
     public static void updateFromExternalResponse(Agent agent, ExternalAgentResponseDTO dto) {

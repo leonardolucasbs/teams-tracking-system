@@ -1,4 +1,5 @@
 import { syncStatusLabels } from "@/features/dashboard/constants/dashboard-constants";
+import { formatBrazilianDateTime } from "@/utils/format-date";
 import type {
   DashboardData,
   DashboardOverviewItem,
@@ -24,14 +25,7 @@ export function isDashboardEmpty(data: DashboardData) {
 }
 
 export function formatDateTime(value: string | null) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatBrazilianDateTime(value);
 }
 
 function buildOverviewItems(

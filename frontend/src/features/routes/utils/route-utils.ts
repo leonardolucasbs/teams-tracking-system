@@ -2,6 +2,7 @@ import type {
   RouteSearch,
   RouteStatus,
 } from "@/features/routes/types/route-types";
+import { formatBrazilianDate, formatBrazilianDateTime } from "@/utils/format-date";
 
 export function canFetchRoute(search: RouteSearch) {
   return search.agentId.trim().length > 0;
@@ -12,24 +13,11 @@ export function normalizeRouteAgentId(agentId: string) {
 }
 
 export function formatRouteDate(value: string | null | undefined) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-  }).format(new Date(`${value}T00:00:00`));
+  return formatBrazilianDate(value);
 }
 
 export function formatRouteDateTime(value: string | null | undefined) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatBrazilianDateTime(value);
 }
 
 export function formatDistance(value: number | null | undefined) {

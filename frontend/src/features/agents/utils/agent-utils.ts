@@ -6,6 +6,7 @@ import type {
   AgentStatus,
 } from "@/features/agents/types/agent-types";
 import { defaultAgentFormValues } from "@/features/agents/constants/agent-constants";
+import { formatBrazilianDateTime } from "@/utils/format-date";
 
 export function normalizeAgent(agent: AgentResponse): Agent {
   return {
@@ -45,7 +46,6 @@ export function getAgentFormValues(agent: Agent | null): AgentFormValues {
     email: agent.email ?? "",
     active: agent.active,
     status: agent.status,
-    battery: agent.battery,
   };
 }
 
@@ -69,12 +69,5 @@ export function getAgentStatusBadgeClassName(status: AgentStatus) {
 }
 
 export function formatAgentDate(value?: string | null) {
-  if (!value) {
-    return "Não informado";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(value));
+  return formatBrazilianDateTime(value);
 }

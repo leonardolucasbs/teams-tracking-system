@@ -19,10 +19,6 @@ export const agentSchema = z.object({
   status: z.enum(["ONLINE", "PAUSED", "SIGNAL_LOST", "OFFLINE"], {
     message: AGENT_VALIDATION_MESSAGES.statusRequired,
   }),
-  battery: z
-    .number({ message: AGENT_VALIDATION_MESSAGES.batteryRequired })
-    .min(0, AGENT_VALIDATION_MESSAGES.batteryMin)
-    .max(100, AGENT_VALIDATION_MESSAGES.batteryMax),
 });
 
 export const agentFiltersSchema = z.object({

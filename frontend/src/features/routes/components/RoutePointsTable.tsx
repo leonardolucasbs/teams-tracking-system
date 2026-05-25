@@ -1,3 +1,6 @@
+ "use client";
+
+import { TablePagination } from "@/components/shared/TablePagination";
 import { RouteStatusBadge } from "@/features/routes/components/RouteStatusBadge";
 import type { RoutePointsTableProps } from "@/features/routes/types/route-types";
 import {
@@ -5,8 +8,11 @@ import {
   formatOptionalNumber,
   formatRouteDateTime,
 } from "@/features/routes/utils/route-utils";
+import { usePagination } from "@/hooks/usePagination";
 
 export function RoutePointsTable({ points }: RoutePointsTableProps) {
+  const pagination = usePagination(points);
+
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
@@ -25,7 +31,7 @@ export function RoutePointsTable({ points }: RoutePointsTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {points.map((point) => (
+            {pagination.paginatedItems.map((point) => (
               <tr key={point.locationId} className="text-foreground">
                 <td className="px-4 py-3 font-mono text-xs">
                   {point.locationId}
@@ -59,6 +65,15 @@ export function RoutePointsTable({ points }: RoutePointsTableProps) {
           </tbody>
         </table>
       </div>
+      <TablePagination
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        pageSize={pagination.pageSize}
+        startItem={pagination.startItem}
+        endItem={pagination.endItem}
+        onPageChange={pagination.setPage}
+      />
     </div>
   );
 }

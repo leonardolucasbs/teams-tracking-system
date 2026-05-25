@@ -4,6 +4,7 @@ import type {
   AgentFormValues,
   AgentResponse,
 } from "@/features/agents/types/agent-types";
+import { AGENT_DEFAULT_BATTERY } from "@/features/agents/constants/agent-constants";
 
 export async function findAgents() {
   try {
@@ -21,7 +22,7 @@ export async function findAgents() {
 export async function createAgent(values: AgentFormValues) {
   const response = await httpClient.post<AgentResponse>(
     "/api/agents",
-    toAgentPayload(values),
+    toCreateAgentPayload(values),
   );
   return response.data;
 }
@@ -29,7 +30,7 @@ export async function createAgent(values: AgentFormValues) {
 export async function updateAgent(id: string, values: AgentFormValues) {
   const response = await httpClient.put<AgentResponse>(
     `/api/agents/${id}`,
-    toAgentPayload(values),
+    toUpdateAgentPayload(values),
   );
   return response.data;
 }
@@ -41,7 +42,14 @@ export async function deactivateAgent(id: string) {
   return response.data;
 }
 
-function toAgentPayload(values: AgentFormValues) {
+function toCreateAgentPayload(values: AgentFormValues) {
+  return {
+    ...toUpdateAgentPayload(values),
+    battery: AGENT_DEFAULT_BATTERY,
+  };
+}
+
+function toUpdateAgentPayload(values: AgentFormValues) {
   return {
     ...values,
     email: values.email?.trim() || null,

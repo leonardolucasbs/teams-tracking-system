@@ -1,3 +1,6 @@
+ "use client";
+
+import { TablePagination } from "@/components/shared/TablePagination";
 import { checkInOriginLabels } from "@/features/check-ins/constants/check-in-constants";
 import { CheckInTypeBadge } from "@/features/check-ins/components/CheckInTypeBadge";
 import type { CheckInsTableProps } from "@/features/check-ins/types/check-in-types";
@@ -6,8 +9,11 @@ import {
   formatCoordinate,
   formatOptionalNumber,
 } from "@/features/check-ins/utils/check-in-utils";
+import { usePagination } from "@/hooks/usePagination";
 
 export function CheckInsTable({ checkIns }: CheckInsTableProps) {
+  const pagination = usePagination(checkIns);
+
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-white">
       <div className="overflow-x-auto">
@@ -32,7 +38,7 @@ export function CheckInsTable({ checkIns }: CheckInsTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {checkIns.map((checkIn) => (
+            {pagination.paginatedItems.map((checkIn) => (
               <tr key={checkIn.id} className="text-foreground">
                 <td className="px-4 py-3 font-mono text-xs">{checkIn.id}</td>
                 <td className="px-4 py-3 font-mono text-xs">
@@ -82,6 +88,15 @@ export function CheckInsTable({ checkIns }: CheckInsTableProps) {
           </tbody>
         </table>
       </div>
+      <TablePagination
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        pageSize={pagination.pageSize}
+        startItem={pagination.startItem}
+        endItem={pagination.endItem}
+        onPageChange={pagination.setPage}
+      />
     </div>
   );
 }

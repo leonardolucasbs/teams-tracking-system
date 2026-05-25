@@ -128,15 +128,6 @@ export function AgentForm({
               ) : null}
             </label>
 
-            <AgentTextField
-              id="battery"
-              label="Bateria"
-              placeholder="85"
-              register={register}
-              error={errors.battery?.message}
-              type="number"
-            />
-
             <label className="flex items-center gap-2 pt-7 text-sm font-medium text-foreground">
               <input
                 type="checkbox"
